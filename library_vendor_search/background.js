@@ -1,3 +1,6 @@
+const INGRAM_URL = "https://ipage.ingramcontent.com/ipage/common/contentdelivery/hm001View.action";
+const BRODART_URL = "https://www.bibz2.com/ActBibzHomeManagerInit.do?actionParam=Home";
+
 // Create context menus based on user settings
 function createMenus() {
   chrome.storage.sync.get({
@@ -55,7 +58,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'updateMenus') {
     createMenus();
   }
-  // New: Listen for successful search completion to clean up storage
+  // Listen for successful search completion to clean up storage
   if (message.action === 'searchSuccess') {
     if (message.vendor === 'ingram') {
       chrome.storage.local.remove(["ingramSearchTerm", "ingramPending", "ingramTabId"]);
@@ -79,7 +82,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         "ingramTabId": null
       }, () => {
         chrome.tabs.create({
-          url: "https://ipage.ingramcontent.com/ipage/common/contentdelivery/hm001View.action",
+          url: INGRAM_URL,
           index: tab.index + 1,
           active: shouldFocus
         }, (newTab) => {
@@ -94,7 +97,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         "brodartTabId": null
       }, () => {
         chrome.tabs.create({
-          url: "https://www.bibz2.com/ActBibzHomeManagerInit.do?actionParam=Home",
+          url: BRODART_URL,
           index: tab.index + 1,
           active: shouldFocus
         }, (newTab) => {
@@ -103,28 +106,6 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
       });
     }
   });
-});
-
-// Listen for navigation events - retry search after login
-// Improved: We keep 'pending' true until the content script confirms success
-chrome.webNavigation.onCompleted.addListener((details) => {
-  chrome.storage.local.get(["ingramSearchTerm", "ingramPending"], (result) => {
-    if (result.ingramSearchTerm && result.ingramPending) {
-      chrome.tabs.sendMessage(details.tabId, { action: 'retrySearch' });
-    }
-  });
-}, {
-  url: [{ hostContains: 'ingramcontent.com' }]
-});
-
-chrome.webNavigation.onCompleted.addListener((details) => {
-  chrome.storage.local.get(["brodartSearchTerm", "brodartPending"], (result) => {
-    if (result.brodartSearchTerm && result.brodartPending) {
-      chrome.tabs.sendMessage(details.tabId, { action: 'retrySearch' });
-    }
-  });
-}, {
-  url: [{ hostContains: 'bibz2.com' }]
 });
 
 // Clean up if user closes the vendor tab without logging in
@@ -138,21 +119,4 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
       chrome.storage.local.remove(["brodartSearchTerm", "brodartPending", "brodartTabId"]);
     }
   });
-});
-
-// Clean up if user navigates away from vendor site without logging in
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.url) {
-    chrome.storage.local.get(["ingramTabId", "ingramPending", "brodartTabId", "brodartPending"], (result) => {
-      if (tabId === result.ingramTabId && result.ingramPending && 
-          !changeInfo.url.includes('ingramcontent.com')) {
-        chrome.storage.local.remove(["ingramSearchTerm", "ingramPending", "ingramTabId"]);
-      }
-      
-      if (tabId === result.brodartTabId && result.brodartPending && 
-          !changeInfo.url.includes('bibz2.com')) {
-        chrome.storage.local.remove(["brodartSearchTerm", "brodartPending", "brodartTabId"]);
-      }
-    });
-  }
 });
