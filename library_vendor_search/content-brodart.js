@@ -12,8 +12,7 @@
         const searchButton = document.getElementById("quickSearchInput");
         
         // Graceful Handling: If we are on the login page (inputs missing), do nothing.
-        // The background script will keep 'pending' true, so when the user logs in
-        // and reaches the dashboard, this script will run again and succeed.
+        // The background script will keep 'pending' true.
         if (!searchInput || !searchButton) {
           console.log("Library Vendor Search: Waiting for login or navigation to dashboard...");
           return;
@@ -57,11 +56,4 @@
   } else {
     performSearch();
   }
-
-  // Listen for retry messages
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'retrySearch') {
-      performSearch();
-    }
-  });
 })();
