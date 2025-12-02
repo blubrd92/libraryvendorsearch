@@ -11,6 +11,12 @@
         const searchInput = document.getElementById("searchText");
         const searchButton = document.getElementById("searchSubmit");
         
+        // Error Handling: Verify elements exist
+        if (!searchInput || !searchButton) {
+          console.error("Library Vendor Search: Could not find Ingram search elements. The website layout may have changed.");
+          return;
+        }
+        
         if (searchInput && searchButton) {
           hasRun = true;
           searchInput.value = searchTerm;
