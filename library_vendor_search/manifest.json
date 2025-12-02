@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "Library Vendor Search",
+  "version": "7.3.0",
+  "description": "Select text, right-click, and search Ingram or Brodart.",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "webNavigation"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://ipage.ingramcontent.com/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://www.bibz2.com/*"
+      ],
+      "js": [
+        "content-brodart.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "options_ui": {
+    "page": "options.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "library-vendor-search@your-library.org",
+      "strict_min_version": "109.0"
+    }
+  },
+  "icons": {
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  }
+}

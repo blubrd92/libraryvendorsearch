@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Library Vendor Search Options</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 500px;
+    }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    .section {
+      margin-bottom: 25px;
+    }
+    .section h2 {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    input[type="checkbox"], input[type="radio"] {
+      margin-right: 8px;
+    }
+    .status {
+      color: green;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Library Vendor Search Settings</h1>
+  
+  <div class="section">
+    <h2>Enabled Vendors</h2>
+    <label>
+      <input type="checkbox" id="enableIngram" checked>
+      Enable Ingram
+    </label>
+    <label>
+      <input type="checkbox" id="enableBrodart" checked>
+      Enable Brodart
+    </label>
+  </div>
+  
+  <div class="section">
+    <h2>Tab Behavior</h2>
+    <label>
+      <input type="radio" name="tabFocus" id="focusTab" value="focus" checked>
+      Focus new tab immediately
+    </label>
+    <label>
+      <input type="radio" name="tabFocus" id="backgroundTab" value="background">
+      Open new tab in background
+    </label>
+  </div>
+  
+  <div class="status" id="status"></div>
+  
+  <script src="options.js"></script>
+</body>
+</html>
