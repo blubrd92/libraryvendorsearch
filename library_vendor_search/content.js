@@ -28,11 +28,4 @@
 
   // Try search on initial load
   performSearch();
-
-  // Listen for retry messages
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.action === 'retrySearch') {
-      performSearch();
-    }
-  });
 })();
