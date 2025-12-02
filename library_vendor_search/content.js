@@ -11,18 +11,17 @@
         const searchInput = document.getElementById("searchText");
         const searchButton = document.getElementById("searchSubmit");
         
-        // Error Handling: Verify elements exist
         if (!searchInput || !searchButton) {
-          console.error("Library Vendor Search: Could not find Ingram search elements. The website layout may have changed.");
-          return;
+           // Wait for login or correct page load
+           return;
         }
         
-        if (searchInput && searchButton) {
-          hasRun = true;
-          searchInput.value = searchTerm;
-          searchButton.click();
-          chrome.storage.local.remove(["ingramSearchTerm", "ingramPending"]);
-        }
+        hasRun = true;
+        searchInput.value = searchTerm;
+        searchButton.click();
+        
+        // Notify background to clear storage
+        chrome.runtime.sendMessage({ action: 'searchSuccess', vendor: 'ingram' });
       }
     });
   }
@@ -30,7 +29,7 @@
   // Try search on initial load
   performSearch();
 
-  // Listen for retry messages from background script
+  // Listen for retry messages
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'retrySearch') {
       performSearch();
