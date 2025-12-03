@@ -2,10 +2,12 @@
 chrome.storage.sync.get({
   enableIngram: true,
   enableBrodart: true,
+  sanitizeSearch: false,
   tabFocus: 'focus'
 }, (items) => {
   document.getElementById('enableIngram').checked = items.enableIngram;
   document.getElementById('enableBrodart').checked = items.enableBrodart;
+  document.getElementById('sanitizeSearch').checked = items.sanitizeSearch;
   
   if (items.tabFocus === 'focus') {
     document.getElementById('focusTab').checked = true;
@@ -19,6 +21,7 @@ function saveOptions() {
   const settings = {
     enableIngram: document.getElementById('enableIngram').checked,
     enableBrodart: document.getElementById('enableBrodart').checked,
+    sanitizeSearch: document.getElementById('sanitizeSearch').checked,
     tabFocus: document.querySelector('input[name="tabFocus"]:checked').value
   };
   
@@ -38,6 +41,7 @@ function saveOptions() {
 // Add event listeners
 document.getElementById('enableIngram').addEventListener('change', saveOptions);
 document.getElementById('enableBrodart').addEventListener('change', saveOptions);
+document.getElementById('sanitizeSearch').addEventListener('change', saveOptions);
 document.querySelectorAll('input[name="tabFocus"]').forEach(radio => {
   radio.addEventListener('change', saveOptions);
 });
