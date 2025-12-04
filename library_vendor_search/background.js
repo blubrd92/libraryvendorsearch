@@ -81,8 +81,15 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     
     // Apply sanitization if enabled
     if (settings.sanitizeSearch && searchTerm) {
-      // Replace colons and commas with spaces, then normalize whitespace
-      searchTerm = searchTerm.replace(/[:,]/g, ' ').replace(/\s+/g, ' ').trim();
+      searchTerm = searchTerm
+        // Replace colons and commas with spaces
+        .replace(/[:,]/g, ' ')
+        // Replace the whole word "by" (case insensitive) with a space
+        // \b ensures we don't match inside words like "byte"
+        .replace(/\bby\b/gi, ' ')
+        // Normalize multiple spaces into one and trim edges
+        .replace(/\s+/g, ' ')
+        .trim();
     }
     
     if (info.menuItemId === "searchIngram" && searchTerm) {
