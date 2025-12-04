@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Library Vendor Search",
-  "version": "7.5.0",
+  "version": "7.4.0",
   "description": "Select text, right-click, and search Ingram or Brodart.",
   "permissions": [
     "contextMenus",
