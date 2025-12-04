@@ -70,10 +70,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  const searchTerm = info.selectionText;
+  let searchTerm = info.selectionText;
   
-  chrome.storage.sync.get({ tabFocus: 'focus' }, (settings) => {
+  // Fetch settings including the new sanitizeSearch option
+  chrome.storage.sync.get({ 
+    tabFocus: 'focus',
+    sanitizeSearch: false 
+  }, (settings) => {
     const shouldFocus = settings.tabFocus === 'focus';
+    
+    // Apply sanitization if enabled
+    if (settings.sanitizeSearch && searchTerm) {
+      // Replace colons and commas with spaces, then normalize whitespace
+      searchTerm = searchTerm.replace(/[:,]/g, ' ').replace(/\s+/g, ' ').trim();
+    }
     
     if (info.menuItemId === "searchIngram" && searchTerm) {
       chrome.storage.local.set({ 
