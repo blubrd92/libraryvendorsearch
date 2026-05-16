@@ -1,51 +1,51 @@
 const INGRAM_URL = "https://ipage.ingramcontent.com/ipage/common/contentdelivery/hm001View.action";
 const BRODART_URL = "https://www.bibz2.com/ActBibzHomeManagerInit.do?actionParam=Home";
+const LIBRARIA_URL = "https://www.libraria.com/";
+
+const VENDORS = [
+  { id: "searchIngram",   key: "enableIngram",   label: "Ingram",   url: INGRAM_URL,   storagePrefix: "ingram" },
+  { id: "searchBrodart",  key: "enableBrodart",  label: "Brodart",  url: BRODART_URL,  storagePrefix: "brodart" },
+  { id: "searchLibraria", key: "enableLibraria", label: "Libraria", url: LIBRARIA_URL, storagePrefix: "libraria" }
+];
+
+function storageKeys(prefix) {
+  return [`${prefix}SearchTerm`, `${prefix}Pending`, `${prefix}TabId`];
+}
 
 // Create context menus based on user settings
 function createMenus() {
-  chrome.storage.sync.get({
-    enableIngram: true,
-    enableBrodart: true
-  }, (settings) => {
+  const defaults = VENDORS.reduce((acc, v) => { acc[v.key] = true; return acc; }, {});
+
+  chrome.storage.sync.get(defaults, (settings) => {
     chrome.contextMenus.removeAll(() => {
-      const ingramEnabled = settings.enableIngram;
-      const brodartEnabled = settings.enableBrodart;
-      
-      if (ingramEnabled && brodartEnabled) {
+      const enabled = VENDORS.filter(v => settings[v.key]);
+
+      if (enabled.length === 0) return;
+
+      if (enabled.length === 1) {
+        const v = enabled[0];
         chrome.contextMenus.create({
-          id: "vendorParent",
-          title: "Search Library Vendors",
+          id: v.id,
+          title: `Search ${v.label} for '%s'`,
           contexts: ["selection"]
         });
-        
+        return;
+      }
+
+      chrome.contextMenus.create({
+        id: "vendorParent",
+        title: "Search Library Vendors",
+        contexts: ["selection"]
+      });
+
+      enabled.forEach(v => {
         chrome.contextMenus.create({
-          id: "searchIngram",
+          id: v.id,
           parentId: "vendorParent",
-          title: "Search Ingram for '%s'",
+          title: `Search ${v.label} for '%s'`,
           contexts: ["selection"]
         });
-        
-        chrome.contextMenus.create({
-          id: "searchBrodart",
-          parentId: "vendorParent",
-          title: "Search Brodart for '%s'",
-          contexts: ["selection"]
-        });
-      }
-      else if (ingramEnabled) {
-        chrome.contextMenus.create({
-          id: "searchIngram",
-          title: "Search Ingram for '%s'",
-          contexts: ["selection"]
-        });
-      }
-      else if (brodartEnabled) {
-        chrome.contextMenus.create({
-          id: "searchBrodart",
-          title: "Search Brodart for '%s'",
-          contexts: ["selection"]
-        });
-      }
+      });
     });
   });
 }
@@ -60,10 +60,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   // Listen for successful search completion to clean up storage
   if (message.action === 'searchSuccess') {
-    if (message.vendor === 'ingram') {
-      chrome.storage.local.remove(["ingramSearchTerm", "ingramPending", "ingramTabId"]);
-    } else if (message.vendor === 'brodart') {
-      chrome.storage.local.remove(["brodartSearchTerm", "brodartPending", "brodartTabId"]);
+    const vendor = VENDORS.find(v => v.storagePrefix === message.vendor);
+    if (vendor) {
+      chrome.storage.local.remove(storageKeys(vendor.storagePrefix));
     }
   }
 });
@@ -71,69 +70,48 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   let searchTerm = info.selectionText;
-  
-  // Fetch settings including the new sanitizeSearch option
-  chrome.storage.sync.get({ 
+  const vendor = VENDORS.find(v => v.id === info.menuItemId);
+  if (!vendor || !searchTerm) return;
+
+  chrome.storage.sync.get({
     tabFocus: 'focus',
-    sanitizeSearch: false 
+    sanitizeSearch: false
   }, (settings) => {
     const shouldFocus = settings.tabFocus === 'focus';
-    
-    // Apply sanitization if enabled
-    if (settings.sanitizeSearch && searchTerm) {
+
+    if (settings.sanitizeSearch) {
       searchTerm = searchTerm
-        // Replace colons and commas with spaces
         .replace(/[:,]/g, ' ')
-        // Replace the whole word "by" (case insensitive) with a space
-        // \b ensures we don't match inside words like "byte"
         .replace(/\bby\b/gi, ' ')
-        // Normalize multiple spaces into one and trim edges
         .replace(/\s+/g, ' ')
         .trim();
     }
-    
-    if (info.menuItemId === "searchIngram" && searchTerm) {
-      chrome.storage.local.set({ 
-        "ingramSearchTerm": searchTerm,
-        "ingramPending": true,
-        "ingramTabId": null
-      }, () => {
-        chrome.tabs.create({
-          url: INGRAM_URL,
-          index: tab.index + 1,
-          active: shouldFocus
-        }, (newTab) => {
-          chrome.storage.local.set({ "ingramTabId": newTab.id });
-        });
+
+    const prefix = vendor.storagePrefix;
+    chrome.storage.local.set({
+      [`${prefix}SearchTerm`]: searchTerm,
+      [`${prefix}Pending`]: true,
+      [`${prefix}TabId`]: null
+    }, () => {
+      chrome.tabs.create({
+        url: vendor.url,
+        index: tab.index + 1,
+        active: shouldFocus
+      }, (newTab) => {
+        chrome.storage.local.set({ [`${prefix}TabId`]: newTab.id });
       });
-    } 
-    else if (info.menuItemId === "searchBrodart" && searchTerm) {
-      chrome.storage.local.set({ 
-        "brodartSearchTerm": searchTerm,
-        "brodartPending": true,
-        "brodartTabId": null
-      }, () => {
-        chrome.tabs.create({
-          url: BRODART_URL,
-          index: tab.index + 1,
-          active: shouldFocus
-        }, (newTab) => {
-          chrome.storage.local.set({ "brodartTabId": newTab.id });
-        });
-      });
-    }
+    });
   });
 });
 
 // Clean up if user closes the vendor tab without logging in
-chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
-  chrome.storage.local.get(["ingramTabId", "ingramPending", "brodartTabId", "brodartPending"], (result) => {
-    if (tabId === result.ingramTabId && result.ingramPending) {
-      chrome.storage.local.remove(["ingramSearchTerm", "ingramPending", "ingramTabId"]);
-    }
-    
-    if (tabId === result.brodartTabId && result.brodartPending) {
-      chrome.storage.local.remove(["brodartSearchTerm", "brodartPending", "brodartTabId"]);
-    }
+chrome.tabs.onRemoved.addListener((tabId) => {
+  const allTabKeys = VENDORS.flatMap(v => [`${v.storagePrefix}TabId`, `${v.storagePrefix}Pending`]);
+  chrome.storage.local.get(allTabKeys, (result) => {
+    VENDORS.forEach(v => {
+      if (tabId === result[`${v.storagePrefix}TabId`] && result[`${v.storagePrefix}Pending`]) {
+        chrome.storage.local.remove(storageKeys(v.storagePrefix));
+      }
+    });
   });
 });
