@@ -60,7 +60,7 @@ This dedicated page replaced the old "privacy" box. Fill every section:
   (`storage.local` / `storage.sync` only). Check the boxes that assert **no data
   collection**.
 - **Privacy policy URL (required):** paste the published policy link:
-  https://docs.google.com/document/d/1DueDWKq1bzZXkNUAlZkDMXeXb8OAKxrXg-zmVjtEaIw/edit?usp=sharing
+  https://docs.google.com/document/d/e/2PACX-1vR2FNp7vnlQ37xpuu-FwKskRNwU9VLTDLO4JUV6gc9_tjwXv6yT23E3OJyV72MkeMlPoKczucsqCdR2/pub
   (it must be viewable to anyone with the link). The version-controlled copy of
   that text lives in **`PRIVACY.md`** — keep the two in sync. Without a reachable
   URL the Privacy page won't let you continue.

@@ -2,7 +2,7 @@
 
 > **Canonical published URL** (this is the link to paste into every store's
 > privacy-policy field — Chrome Web Store, Microsoft Edge Add-ons, Firefox AMO):
-> https://docs.google.com/document/d/1DueDWKq1bzZXkNUAlZkDMXeXb8OAKxrXg-zmVjtEaIw/edit?usp=sharing
+> https://docs.google.com/document/d/e/2PACX-1vR2FNp7vnlQ37xpuu-FwKskRNwU9VLTDLO4JUV6gc9_tjwXv6yT23E3OJyV72MkeMlPoKczucsqCdR2/pub
 >
 > This file is the version-controlled copy. If you edit one, update the other so
 > the published policy and the repo stay in sync.
