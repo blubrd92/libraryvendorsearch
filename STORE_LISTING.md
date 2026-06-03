@@ -129,10 +129,14 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
   `library-vendor-search@your-library.org`).
 
 ### Microsoft Edge Add-ons
-- Free. Review typically **24–72h**.
+- Free. Review typically **24–72h** (Microsoft states up to 7 business days).
 - Upload the **chromium** zip.
 - Rejects `background.scripts` in MV3 — exact error:
   `The background.scripts field cannot be used with manifest version 3`.
+- **First time publishing to Edge?** See **`EDGE_SUBMISSION.md`** for the full
+  Partner Center walkthrough (account setup, the 2026 Privacy page, and
+  paste-ready listing copy + reviewer notes). Privacy policy text to host lives
+  in **`PRIVACY.md`**.
 
 ---
 
