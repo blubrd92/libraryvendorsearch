@@ -37,7 +37,8 @@
     },
     {
       "matches": [
-        "https://www.libraria.com/*"
+        "https://libraria.com/*",
+        "https://*.libraria.com/*"
       ],
       "js": [
         "vendor/browser-polyfill.min.js",
