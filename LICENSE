@@ -1,0 +1,24 @@
+Library Vendor Search
+======================
+
+The source code of this extension — everything except the third-party
+components listed below — is proprietary. All rights reserved.
+
+(If you intend to open-source this project, replace this notice with your
+chosen license. The third-party notice below must be kept regardless, because
+the MPL-2.0 component is redistributed inside every published build.)
+
+
+Third-party components
+----------------------
+
+vendor/browser-polyfill.min.js
+    Mozilla webextension-polyfill, version 0.12.0
+    Copyright (c) Mozilla and contributors
+    Licensed under the Mozilla Public License, v. 2.0 (MPL-2.0).
+    Full license text: library_vendor_search/vendor/browser-polyfill-LICENSE.txt
+    Source: https://github.com/mozilla/webextension-polyfill
+
+    This file is bundled unmodified and shipped in both the Chromium and
+    Firefox store packages. Under MPL-2.0 the source for this file remains
+    available at the URL above.

@@ -4,7 +4,7 @@
   function performSearch() {
     if (hasRun) return;
 
-    chrome.storage.local.get(["librariaSearchTerm"], (result) => {
+    browser.storage.local.get(["librariaSearchTerm"]).then((result) => {
       const searchTerm = result.librariaSearchTerm;
       if (!searchTerm) return;
 
@@ -34,7 +34,7 @@
         if (searchInput.value === searchTerm) {
           searchButton.click();
           clearInterval(clickInterval);
-          chrome.runtime.sendMessage({ action: 'searchSuccess', vendor: 'libraria' });
+          browser.runtime.sendMessage({ action: 'searchSuccess', vendor: 'libraria' });
         } else {
           searchInput.value = searchTerm;
           searchInput.dispatchEvent(new Event('input', { bubbles: true }));

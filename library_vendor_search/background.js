@@ -1,3 +1,19 @@
+// Library Vendor Search — background script.
+//
+// One source file runs in both engines. On Chromium it loads as an MV3 service
+// worker (manifest `background.service_worker`), so the webextension-polyfill is
+// pulled in via importScripts below. On Firefox it loads as a non-persistent
+// background *page* (manifest `background.scripts`, which lists the polyfill as
+// its first entry), where `importScripts` does not exist — hence the typeof
+// guard.
+//
+// DO NOT REMOVE the importScripts guard. Without it Firefox throws a
+// ReferenceError ("importScripts is not defined") on startup. If you refactor
+// this file, preserve it.
+if (typeof importScripts === 'function') {
+  importScripts('vendor/browser-polyfill.min.js'); // Chromium service-worker path
+}
+
 const INGRAM_URL = "https://ipage.ingramcontent.com/ipage/common/contentdelivery/hm001View.action";
 const BRODART_URL = "https://www.bibz2.com/ActBibzHomeManagerInit.do?actionParam=Home";
 const LIBRARIA_URL = "https://www.libraria.com/";
@@ -13,48 +29,46 @@ function storageKeys(prefix) {
 }
 
 // Create context menus based on user settings
-function createMenus() {
+async function createMenus() {
   const defaults = VENDORS.reduce((acc, v) => { acc[v.key] = true; return acc; }, {});
 
-  chrome.storage.sync.get(defaults, (settings) => {
-    chrome.contextMenus.removeAll(() => {
-      const enabled = VENDORS.filter(v => settings[v.key]);
+  const settings = await browser.storage.sync.get(defaults);
+  await browser.contextMenus.removeAll();
 
-      if (enabled.length === 0) return;
+  const enabled = VENDORS.filter(v => settings[v.key]);
+  if (enabled.length === 0) return;
 
-      if (enabled.length === 1) {
-        const v = enabled[0];
-        chrome.contextMenus.create({
-          id: v.id,
-          title: `Search ${v.label} for '%s'`,
-          contexts: ["selection"]
-        });
-        return;
-      }
+  if (enabled.length === 1) {
+    const v = enabled[0];
+    browser.contextMenus.create({
+      id: v.id,
+      title: `Search ${v.label} for '%s'`,
+      contexts: ["selection"]
+    });
+    return;
+  }
 
-      chrome.contextMenus.create({
-        id: "vendorParent",
-        title: "Search Library Vendors",
-        contexts: ["selection"]
-      });
+  browser.contextMenus.create({
+    id: "vendorParent",
+    title: "Search Library Vendors",
+    contexts: ["selection"]
+  });
 
-      enabled.forEach(v => {
-        chrome.contextMenus.create({
-          id: v.id,
-          parentId: "vendorParent",
-          title: `Search ${v.label} for '%s'`,
-          contexts: ["selection"]
-        });
-      });
+  enabled.forEach(v => {
+    browser.contextMenus.create({
+      id: v.id,
+      parentId: "vendorParent",
+      title: `Search ${v.label} for '%s'`,
+      contexts: ["selection"]
     });
   });
 }
 
-chrome.runtime.onInstalled.addListener(() => {
+browser.runtime.onInstalled.addListener(() => {
   createMenus();
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message) => {
   if (message.action === 'updateMenus') {
     createMenus();
   }
@@ -62,56 +76,55 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'searchSuccess') {
     const vendor = VENDORS.find(v => v.storagePrefix === message.vendor);
     if (vendor) {
-      chrome.storage.local.remove(storageKeys(vendor.storagePrefix));
+      browser.storage.local.remove(storageKeys(vendor.storagePrefix));
     }
   }
+  // Intentionally return undefined: we never send an async response, so the
+  // message channel should not be kept open (returning a Promise would).
 });
 
 // Handle context menu clicks
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
   let searchTerm = info.selectionText;
   const vendor = VENDORS.find(v => v.id === info.menuItemId);
   if (!vendor || !searchTerm) return;
 
-  chrome.storage.sync.get({
+  const settings = await browser.storage.sync.get({
     tabFocus: 'focus',
     sanitizeSearch: false
-  }, (settings) => {
-    const shouldFocus = settings.tabFocus === 'focus';
-
-    if (settings.sanitizeSearch) {
-      searchTerm = searchTerm
-        .replace(/[:,]/g, ' ')
-        .replace(/\bby\b/gi, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-    }
-
-    const prefix = vendor.storagePrefix;
-    chrome.storage.local.set({
-      [`${prefix}SearchTerm`]: searchTerm,
-      [`${prefix}Pending`]: true,
-      [`${prefix}TabId`]: null
-    }, () => {
-      chrome.tabs.create({
-        url: vendor.url,
-        index: tab.index + 1,
-        active: shouldFocus
-      }, (newTab) => {
-        chrome.storage.local.set({ [`${prefix}TabId`]: newTab.id });
-      });
-    });
   });
+  const shouldFocus = settings.tabFocus === 'focus';
+
+  if (settings.sanitizeSearch) {
+    searchTerm = searchTerm
+      .replace(/[:,]/g, ' ')
+      .replace(/\bby\b/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  const prefix = vendor.storagePrefix;
+  await browser.storage.local.set({
+    [`${prefix}SearchTerm`]: searchTerm,
+    [`${prefix}Pending`]: true,
+    [`${prefix}TabId`]: null
+  });
+
+  const newTab = await browser.tabs.create({
+    url: vendor.url,
+    index: tab.index + 1,
+    active: shouldFocus
+  });
+  await browser.storage.local.set({ [`${prefix}TabId`]: newTab.id });
 });
 
 // Clean up if user closes the vendor tab without logging in
-chrome.tabs.onRemoved.addListener((tabId) => {
+browser.tabs.onRemoved.addListener(async (tabId) => {
   const allTabKeys = VENDORS.flatMap(v => [`${v.storagePrefix}TabId`, `${v.storagePrefix}Pending`]);
-  chrome.storage.local.get(allTabKeys, (result) => {
-    VENDORS.forEach(v => {
-      if (tabId === result[`${v.storagePrefix}TabId`] && result[`${v.storagePrefix}Pending`]) {
-        chrome.storage.local.remove(storageKeys(v.storagePrefix));
-      }
-    });
+  const result = await browser.storage.local.get(allTabKeys);
+  VENDORS.forEach(v => {
+    if (tabId === result[`${v.storagePrefix}TabId`] && result[`${v.storagePrefix}Pending`]) {
+      browser.storage.local.remove(storageKeys(v.storagePrefix));
+    }
   });
 });

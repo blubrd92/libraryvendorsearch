@@ -8,7 +8,7 @@ const DEFAULTS = {
 
 let statusTimer = null;
 
-chrome.storage.sync.get(DEFAULTS, (items) => {
+browser.storage.sync.get(DEFAULTS).then((items) => {
   document.getElementById('enableIngram').checked = items.enableIngram;
   document.getElementById('enableBrodart').checked = items.enableBrodart;
   document.getElementById('enableLibraria').checked = items.enableLibraria;
@@ -30,13 +30,13 @@ function saveOptions() {
     tabFocus: document.querySelector('input[name="tabFocus"]:checked').value
   };
 
-  chrome.storage.sync.set(settings, () => {
+  browser.storage.sync.set(settings).then(() => {
     const status = document.getElementById('status');
     status.classList.add('visible');
     clearTimeout(statusTimer);
     statusTimer = setTimeout(() => status.classList.remove('visible'), 1200);
 
-    chrome.runtime.sendMessage({ action: 'updateMenus' });
+    browser.runtime.sendMessage({ action: 'updateMenus' });
   });
 }
 
