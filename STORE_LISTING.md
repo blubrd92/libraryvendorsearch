@@ -145,6 +145,64 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
 
 ---
 
+## Firefox (AMO) submission fields
+
+What to put in the two fields on AMO's "Submit a New Version" page.
+
+**Release Notes** (public — shown on the listing's detail page, so write for
+*users*, covering what's new since the version they currently have):
+
+```
+New in this version:
+• Libraria is now supported as a third book vendor. Highlight a title,
+  right-click, and search Ingram, Brodart, or Libraria.
+• Settings now live in the toolbar popup: turn each vendor on or off, choose
+  whether result tabs open in the foreground or background, and optionally
+  clean up selected text (removing stray colons, commas, and the word "by")
+  before searching.
+
+Note: this version requires Firefox 140 or newer.
+```
+
+**Notes to Reviewer** (private — addresses AMO's source-code/build policy and the
+fact that the vendor sites are login-gated):
+
+```
+SOURCE CODE & BUILD PROCESS
+This add-on uses no build step, bundler, transpiler, or minifier of our own.
+The files in this package are the complete, human-readable source and run
+exactly as submitted. The only pre-minified file is
+vendor/browser-polyfill.min.js — an unmodified copy of Mozilla's
+webextension-polyfill v0.12.0, obtained from npm
+(npm pack webextension-polyfill@0.12.0) and also available at
+https://github.com/mozilla/webextension-polyfill . Its license is included at
+vendor/browser-polyfill-LICENSE.txt .
+
+HOW TO TEST
+1. Select/highlight some text on any web page (e.g., a book title).
+2. Right-click and choose "Search Library Vendors" → "Search Ingram / Brodart /
+   Libraria for '<your text>'" (a single "Search <Vendor>" item appears if only
+   one vendor is enabled in the toolbar popup).
+3. A new tab opens to the vendor's site and your selected text is entered into
+   that site's search box and submitted.
+
+PLEASE NOTE — gated vendor portals:
+The three vendor sites (ipage.ingramcontent.com, www.bibz2.com,
+www.libraria.com) are professional library purchasing portals that require an
+institutional login to reach a search box. Without an account, the new tab will
+land on the vendor's login page — this is expected. The add-on keeps the pending
+term and fills the search box automatically once you are logged in and a search
+box is present. The context-menu items, tab opening, and the toolbar popup are
+all fully testable without an account.
+
+PRIVACY/DATA:
+The add-on collects and transmits no data. The selected term (storage.local) and
+the user's preferences (storage.sync) stay in the browser. No remote code is
+loaded.
+```
+
+---
+
 ## Refreshing the bundled polyfill
 
 The shipped polyfill is `library_vendor_search/vendor/browser-polyfill.min.js`
