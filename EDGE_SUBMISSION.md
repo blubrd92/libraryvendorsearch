@@ -115,9 +115,13 @@ contextMenus — Adds the right-click "Search <Vendor>" menu items that the user
 clicks to launch a search. This is the extension's entire user interface for
 starting a search.
 
-storage — Saves the user's vendor on/off toggles and search preferences
-(storage.sync) and temporarily holds the selected search term while the vendor
-page loads (storage.local). No data is sent anywhere; it stays in the browser.
+storage — Used for two things. First, it temporarily passes the selected book
+title from the right-click menu (in the background script) to the new vendor tab
+where the content script runs, using chrome.storage.local; the term is cleared
+once the search runs. Second, it saves the user's preferences with
+chrome.storage.sync — which vendors are enabled, whether tabs open in the
+foreground or background, and the optional clean-up-text setting. No data is
+collected or transmitted; everything stays in the browser.
 
 Host access to ipage.ingramcontent.com, www.bibz2.com, and www.libraria.com —
 A content script runs only on these three vendor sites to type the user's

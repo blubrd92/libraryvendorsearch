@@ -101,8 +101,10 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
   menu."
 - **Permission justifications:**
   - `contextMenus` — adds the right-click "Search <Vendor>" entries.
-  - `storage` — saves vendor toggles (`storage.sync`) and the pending search
-    term between page loads (`storage.local`).
+  - `storage` — temporarily passes the selected term to the vendor tab
+    (`storage.local`, cleared after the search) and saves user preferences —
+    enabled vendors, foreground/background tab, clean-up-text option
+    (`storage.sync`). Nothing is collected or transmitted.
   - host matches (`ipage.ingramcontent.com`, `bibz2.com`, `libraria.com`) —
     the content scripts that fill each vendor's search box run only on those
     sites.
