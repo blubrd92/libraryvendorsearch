@@ -1,49 +1,77 @@
-# Privacy Policy — Library Vendor Search
+# Privacy Policy for "Library Vendor Search"
 
-_Last updated: 2026-06-03_
+> **Canonical published URL** (this is the link to paste into every store's
+> privacy-policy field — Chrome Web Store, Microsoft Edge Add-ons, Firefox AMO):
+> https://docs.google.com/document/d/1DueDWKq1bzZXkNUAlZkDMXeXb8OAKxrXg-zmVjtEaIw/edit?usp=sharing
+>
+> This file is the version-controlled copy. If you edit one, update the other so
+> the published policy and the repo stay in sync.
 
-Library Vendor Search is a browser extension that lets you select text on a web
-page, right-click, and open that text as a search on a library book vendor's
-website (Ingram, Brodart, or Libraria).
+Effective Date: June 3, 2026
 
-## What the extension stores
+This browser extension is a simple productivity tool designed to help users
+search for book titles on the Ingram iPage, Brodart Bibz, and Libraria websites.
 
-The extension stores two kinds of information, **only inside your own browser**:
+## Data Handling
 
-- **Your preferences** — which vendors are enabled, whether the vendor tab opens
-  in the foreground or background, and the optional "clean up search text"
-  setting. These are saved using the browser's `storage.sync` so they can follow
-  your browser profile.
-- **The current search term** — when you launch a search, the selected text is
-  briefly saved using the browser's `storage.local` so the vendor page can read
-  it and fill in the search box. It is removed once the search runs (or when you
-  close the vendor tab).
+This extension does not collect, save, or transmit any user data to the
+developer or any third-party servers. All data remains on your device.
 
-## What the extension does NOT do
+## How the Extension Works
 
-- It does **not** collect, transmit, sell, or share any personal information.
-- It does **not** send your selected text, browsing activity, or preferences to
-  the developer or to any third-party server.
-- It does **not** include analytics, tracking, or advertising.
-- It does **not** load or execute any remote code; all of its code ships inside
-  the extension package.
+- The user highlights a book title on any webpage
+- The user right-clicks and selects a vendor from the context menu — for example
+  "Search Ingram for...", "Search Brodart for...", or "Search Libraria for..."
+  (when more than one vendor is enabled, these appear under a "Search Library
+  Vendors" submenu)
+- The extension temporarily saves the selected text to the browser's local
+  storage (`chrome.storage.local`). This data stays on the user's computer
+- The extension opens a new tab to one of:
+  - Ingram iPage dashboard (ipage.ingramcontent.com),
+  - Brodart Bibz dashboard (www.bibz2.com), or
+  - Libraria (www.libraria.com)
+- A content script, which runs only on the specific vendor URL, retrieves the
+  saved title from local storage, pastes it into the search bar, and clicks the
+  search button
+- The text is cleared from the browser's local storage after the search is
+  performed (or if the vendor tab is closed before searching)
+- These vendor websites are operated by third parties and may require your
+  library's own login; anything you do on those sites is governed by their own
+  privacy policies
 
-## Third-party vendor sites
+## User Preferences
 
-When you run a search, the extension opens the vendor's own website
-(`ipage.ingramcontent.com`, `www.bibz2.com`, or `www.libraria.com`) in a new
-tab. Anything you do on those sites — including logging in with your library
-account — is governed by **those sites' own privacy policies**, not this one.
+The extension includes an options page where users can customize their
+experience. User preferences are stored using `chrome.storage.sync`, which
+includes:
+
+- Which vendors to enable (Ingram, Brodart, and/or Libraria)
+- Whether new tabs should open in the foreground or background
+- Whether to clean up the selected text (removing stray colons, commas, and the
+  word "by") before searching
+
+These preferences are stored locally and synced across your browser
+installations through your browser's built-in sync feature (if enabled). This
+data never leaves your browser ecosystem and is not transmitted to the developer
+or any third parties.
 
 ## Permissions
 
-- `contextMenus` — to add the right-click "Search <Vendor>" menu items.
-- `storage` — to save the preferences and the transient search term described
-  above.
-- Access to the three vendor domains — so the extension can fill in the search
-  box on those sites only.
+The extension requires the following permissions:
 
-## Contact
+- **contextMenus**: To add search options to the right-click menu
+- **storage**: To temporarily store search terms and save user preferences
+  locally
+- **Access to the vendor sites** (ipage.ingramcontent.com, www.bibz2.com,
+  www.libraria.com): So the extension can fill in the search box on those sites
+  only
 
-Questions about this policy can be directed to the extension's listed support
-contact in the store.
+## Data Security
+
+No personally identifiable information, browsing history, or sensitive user data
+is collected, accessed, or transmitted by this extension.
+
+## Changes to This Policy
+
+Any updates to this privacy policy will be reflected in the extension listing on
+the Chrome Web Store, Microsoft Edge Add-ons, and Firefox Add-ons store.

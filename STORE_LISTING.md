@@ -93,7 +93,9 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
 
 - **Privacy policy URL** — required by Chrome/Edge if any permission could touch
   user data. This extension stores only a transient search term and user
-  toggles locally; no remote collection.
+  toggles locally; no remote collection. Published policy:
+  https://docs.google.com/document/d/1DueDWKq1bzZXkNUAlZkDMXeXb8OAKxrXg-zmVjtEaIw/edit?usp=sharing
+  (mirrored in `PRIVACY.md`).
 - **Single-purpose statement** — "Lets a librarian search a selected term on a
   library book vendor's site (Ingram, Brodart, Libraria) via the right-click
   menu."
@@ -135,8 +137,9 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
   `The background.scripts field cannot be used with manifest version 3`.
 - **First time publishing to Edge?** See **`EDGE_SUBMISSION.md`** for the full
   Partner Center walkthrough (account setup, the 2026 Privacy page, and
-  paste-ready listing copy + reviewer notes). Privacy policy text to host lives
-  in **`PRIVACY.md`**.
+  paste-ready listing copy + reviewer notes). Privacy policy URL:
+  [Google Doc](https://docs.google.com/document/d/1DueDWKq1bzZXkNUAlZkDMXeXb8OAKxrXg-zmVjtEaIw/edit?usp=sharing)
+  (text mirrored in **`PRIVACY.md`**).
 
 ---
 

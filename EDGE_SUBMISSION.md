@@ -59,10 +59,11 @@ This dedicated page replaced the old "privacy" box. Fill every section:
   data — the selected term and the on/off toggles never leave the browser
   (`storage.local` / `storage.sync` only). Check the boxes that assert **no data
   collection**.
-- **Privacy policy URL (required):** you must supply a hosted URL. A ready-to-
-  publish policy is included in this repo at **`PRIVACY.md`** — host it (e.g.
-  GitHub Pages, or a page on your library site) and paste that URL here. Without
-  a reachable URL the Privacy page won't let you continue.
+- **Privacy policy URL (required):** paste the published policy link:
+  https://docs.google.com/document/d/1DueDWKq1bzZXkNUAlZkDMXeXb8OAKxrXg-zmVjtEaIw/edit?usp=sharing
+  (it must be viewable to anyone with the link). The version-controlled copy of
+  that text lives in **`PRIVACY.md`** — keep the two in sync. Without a reachable
+  URL the Privacy page won't let you continue.
 - **Save & Continue.**
 
 ## 5. Store listing (per language — at minimum English)
