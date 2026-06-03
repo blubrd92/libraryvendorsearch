@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Library Vendor Search",
-  "version": "7.5.0",
-  "description": "Select text, right-click, and search Ingram or Brodart.",
+  "version": "7.6.0",
+  "description": "Select text, right-click, and search Ingram, Brodart, or Libraria.",
   "permissions": [
     "contextMenus",
     "storage"
@@ -31,10 +31,25 @@
         "content-brodart.js"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://www.libraria.com/*"
+      ],
+      "js": [
+        "content-libraria.js"
+      ],
+      "run_at": "document_end"
     }
   ],
-  "options_ui": {
-    "page": "options.html"
+  "action": {
+    "default_popup": "options.html",
+    "default_title": "Library Vendor Search",
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "48": "images/icon-48.png",
+      "128": "images/icon-128.png"
+    }
   },
   "browser_specific_settings": {
     "gecko": {

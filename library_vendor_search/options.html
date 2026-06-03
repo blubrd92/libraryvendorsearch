@@ -2,77 +2,331 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Library Vendor Search Options</title>
+  <title>Library Vendor Search</title>
   <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #f7f8fa;
+      --surface-hover: #eef0f4;
+      --border: #e4e7ec;
+      --text: #1f2937;
+      --text-muted: #6b7280;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --success: #16a34a;
+      --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1a1b1e;
+        --surface: #25272b;
+        --surface-hover: #2e3035;
+        --border: #3a3d42;
+        --text: #f3f4f6;
+        --text-muted: #9ca3af;
+        --accent: #60a5fa;
+        --accent-hover: #93c5fd;
+        --success: #4ade80;
+        --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 500px;
+      width: 340px;
+      padding: 16px;
     }
-    h1 {
-      font-size: 18px;
-      margin-bottom: 20px;
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 14px;
+      margin-bottom: 14px;
+      border-bottom: 1px solid var(--border);
     }
-    .section {
-      margin-bottom: 25px;
-    }
-    .section h2 {
+
+    header .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
       font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 10px;
     }
-    label {
-      display: block;
-      margin-bottom: 8px;
+
+    header h1 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      margin: 2px 0 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin: 0 0 10px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
       cursor: pointer;
     }
-    input[type="checkbox"], input[type="radio"] {
-      margin-right: 8px;
+
+    .row + .row {
+      border-top: 1px solid var(--border);
     }
-    .status {
-      color: green;
+
+    .row-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+      padding-right: 10px;
+    }
+
+    .row-label .name {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .row-label .desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Toggle switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 999px;
+      transition: background 0.18s ease;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .slider { background: #4b5563; }
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      top: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.18s ease;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .switch input:checked + .slider {
+      background: var(--accent);
+    }
+
+    .switch input:checked + .slider::before {
+      transform: translateX(14px);
+    }
+
+    .switch input:focus-visible + .slider {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Radio group */
+    .radio-group {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .radio-option {
+      flex: 1;
+      position: relative;
+    }
+
+    .radio-option input {
+      position: absolute;
+      opacity: 0;
+      inset: 0;
+      cursor: pointer;
+    }
+
+    .radio-option label {
+      display: block;
+      text-align: center;
+      padding: 8px 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
       font-size: 12px;
-      margin-top: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .radio-option input:checked + label {
+      border-color: var(--accent);
+      background: rgba(37, 99, 235, 0.08);
+      color: var(--accent);
+    }
+
+    .radio-option input:focus-visible + label {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 11px;
+      color: var(--success);
+      min-height: 14px;
+      margin-top: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .status.visible {
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 6px;
     }
   </style>
 </head>
 <body>
-  <h1>Library Vendor Search Settings</h1>
-  
-  <div class="section">
-    <h2>Enabled Vendors</h2>
-    <label>
-      <input type="checkbox" id="enableIngram" checked>
-      Enable Ingram
+  <header>
+    <div class="logo">LV</div>
+    <div>
+      <h1>Library Vendor Search</h1>
+      <p>Right-click selected text to search.</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <p class="card-title">Vendors</p>
+
+    <label class="row">
+      <span class="row-label">
+        <span class="name">Ingram</span>
+        <span class="desc">ipage.ingramcontent.com</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="enableIngram">
+        <span class="slider"></span>
+      </span>
     </label>
-    <label>
-      <input type="checkbox" id="enableBrodart" checked>
-      Enable Brodart
+
+    <label class="row">
+      <span class="row-label">
+        <span class="name">Brodart</span>
+        <span class="desc">bibz2.com</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="enableBrodart">
+        <span class="slider"></span>
+      </span>
+    </label>
+
+    <label class="row">
+      <span class="row-label">
+        <span class="name">Libraria</span>
+        <span class="desc">libraria.com</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="enableLibraria">
+        <span class="slider"></span>
+      </span>
     </label>
   </div>
 
-  <div class="section">
-    <h2>Search Settings</h2>
-    <label>
-      <input type="checkbox" id="sanitizeSearch">
-      Clean search text (removes colons, commas, and "by")
+  <div class="card">
+    <p class="card-title">Search</p>
+    <label class="row">
+      <span class="row-label">
+        <span class="name">Clean search text</span>
+        <span class="desc">Strip colons, commas, and "by"</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="sanitizeSearch">
+        <span class="slider"></span>
+      </span>
     </label>
   </div>
-  
-  <div class="section">
-    <h2>Tab Behavior</h2>
-    <label>
-      <input type="radio" name="tabFocus" id="focusTab" value="focus" checked>
-      Focus new tab immediately
-    </label>
-    <label>
-      <input type="radio" name="tabFocus" id="backgroundTab" value="background">
-      Open new tab in background
-    </label>
+
+  <div class="card">
+    <p class="card-title">New tab</p>
+    <div class="radio-group">
+      <div class="radio-option">
+        <input type="radio" name="tabFocus" id="focusTab" value="focus">
+        <label for="focusTab">Focus</label>
+      </div>
+      <div class="radio-option">
+        <input type="radio" name="tabFocus" id="backgroundTab" value="background">
+        <label for="backgroundTab">Background</label>
+      </div>
+    </div>
   </div>
-  
-  <div class="status" id="status"></div>
-  
+
+  <div class="status" id="status">Saved</div>
+  <footer>v7.6.0</footer>
+
   <script src="options.js"></script>
 </body>
 </html>
