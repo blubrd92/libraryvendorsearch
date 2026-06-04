@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Library Vendor Search",
-  "version": "7.7.0",
+  "version": "7.7.1",
   "description": "Select text, right-click, and search Ingram, Brodart, or Libraria.",
   "permissions": [
     "contextMenus",
@@ -37,8 +37,7 @@
     },
     {
       "matches": [
-        "https://libraria.com/*",
-        "https://*.libraria.com/*"
+        "https://www.libraria.com/*"
       ],
       "js": [
         "vendor/browser-polyfill.min.js",

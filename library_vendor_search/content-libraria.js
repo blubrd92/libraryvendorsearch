@@ -38,10 +38,19 @@
       const searchTerm = result.librariaSearchTerm;
       if (!searchTerm) return;
 
-      const searchInput = findSearchInput();
+      // The background script opens Libraria's results URL directly (the term is
+      // already in the query string). If we've landed on a results page, the
+      // search already ran — just clear the pending term and stop.
+      if (location.pathname.includes('/catalogsearch/result')) {
+        hasRun = true;
+        browser.runtime.sendMessage({ action: 'searchSuccess', vendor: 'libraria' });
+        return;
+      }
 
-      // If no search box is present, the user is likely on a login screen or the
-      // box hasn't rendered yet. Keep the pending term; the observer retries.
+      // Otherwise we were probably bounced to a login page and then landed on a
+      // page that has the search box (e.g. the home page after signing in). Fill
+      // and submit it. If there's no box yet, keep waiting; the observer retries.
+      const searchInput = findSearchInput();
       if (!searchInput) {
         console.log("Library Vendor Search: Libraria search box not found yet; waiting...");
         return;

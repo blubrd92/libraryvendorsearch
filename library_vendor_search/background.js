@@ -17,11 +17,16 @@ if (typeof importScripts === 'function') {
 const INGRAM_URL = "https://ipage.ingramcontent.com/ipage/common/contentdelivery/hm001View.action";
 const BRODART_URL = "https://www.bibz2.com/ActBibzHomeManagerInit.do?actionParam=Home";
 const LIBRARIA_URL = "https://www.libraria.com/";
+const LIBRARIA_SEARCH_URL = "https://www.libraria.com/catalogsearch/result/";
 
 const VENDORS = [
   { id: "searchIngram",   key: "enableIngram",   label: "Ingram",   url: INGRAM_URL,   storagePrefix: "ingram" },
   { id: "searchBrodart",  key: "enableBrodart",  label: "Brodart",  url: BRODART_URL,  storagePrefix: "brodart" },
-  { id: "searchLibraria", key: "enableLibraria", label: "Libraria", url: LIBRARIA_URL, storagePrefix: "libraria" }
+  // Libraria is a Magento store: search is a plain results URL, so we open it
+  // directly (term baked in) rather than relying on the content script to fill
+  // the box. content-libraria.js remains a fallback for the post-login case.
+  { id: "searchLibraria", key: "enableLibraria", label: "Libraria", url: LIBRARIA_URL, storagePrefix: "libraria",
+    searchUrl: (term) => `${LIBRARIA_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` }
 ];
 
 function storageKeys(prefix) {
@@ -110,8 +115,9 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
     [`${prefix}TabId`]: null
   });
 
+  const targetUrl = vendor.searchUrl ? vendor.searchUrl(searchTerm) : vendor.url;
   const newTab = await browser.tabs.create({
-    url: vendor.url,
+    url: targetUrl,
     index: tab.index + 1,
     active: shouldFocus
   });

@@ -75,6 +75,13 @@ a `<script>` tag in `options.html`), so they need no guard.
 
 ### Release notes
 
+#### 7.7.1
+- Fixed Libraria search: the extension now opens Libraria's results page
+  directly with the search term (Libraria is a Magento store, so search is a
+  `/catalogsearch/result/?q=` URL). Previously it relied on filling the search
+  box, which silently did nothing. The content script remains as a fallback for
+  the just-logged-in case.
+
 #### 7.7.0
 - Cross-store publishing infrastructure: two-zip build (`npm run
   package:extension`) producing Firefox and Chromium/Edge packages from one

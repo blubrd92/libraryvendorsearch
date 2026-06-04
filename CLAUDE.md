@@ -94,7 +94,7 @@ The build only mutates *copies* of the manifest — never the source. See
 
 ## Bumping the version
 
-Update `version` in `manifest.json` when shipping changes (currently `7.7.0`).
+Update `version` in `manifest.json` when shipping changes (currently `7.7.1`).
 **Every store re-upload requires a new version**, and each bump must be paired
 with a matching entry in the `STORE_LISTING.md` "Release notes" section (that
 text is what stores ask you to paste). `package.json`'s `version` is cosmetic —
