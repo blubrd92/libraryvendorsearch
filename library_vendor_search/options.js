@@ -2,7 +2,7 @@ const DEFAULTS = {
   enableIngram: true,
   enableBrodart: true,
   enableLibraria: true,
-  sanitizeSearch: false,
+  sanitizeSearch: true,
   tabFocus: 'focus'
 };
 

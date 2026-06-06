@@ -96,7 +96,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 
   const settings = await browser.storage.sync.get({
     tabFocus: 'focus',
-    sanitizeSearch: false
+    sanitizeSearch: true
   });
   const shouldFocus = settings.tabFocus === 'focus';
 

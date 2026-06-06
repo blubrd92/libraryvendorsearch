@@ -86,6 +86,8 @@ a `<script>` tag in `options.html`), so they need no guard.
   running a blank search (applies to all vendors).
 - The Libraria content script now disconnects its DOM observer once a search is
   committed, instead of observing for the page's lifetime.
+- "Clean up search text" now defaults to **on** for new installs (existing users
+  keep whatever they chose). It can still be toggled off in the popup.
 
 #### 7.7.0
 - Cross-store publishing infrastructure: two-zip build (`npm run
@@ -169,9 +171,9 @@ New in this version:
 • Libraria is now supported as a third book vendor. Highlight a title,
   right-click, and search Ingram, Brodart, or Libraria.
 • Settings now live in the toolbar popup: turn each vendor on or off, choose
-  whether result tabs open in the foreground or background, and optionally
-  clean up selected text (removing stray colons, commas, and the word "by")
-  before searching.
+  whether result tabs open in the foreground or background, and clean up
+  selected text (removing stray colons, commas, and the word "by") before
+  searching — on by default, and can be turned off in the popup.
 
 Note: this version requires Firefox 140 or newer.
 ```
