@@ -101,11 +101,14 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   const shouldFocus = settings.tabFocus === 'focus';
 
   if (settings.sanitizeSearch) {
-    searchTerm = searchTerm
+    const cleaned = searchTerm
       .replace(/[:,]/g, ' ')
       .replace(/\bby\b/gi, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+    // Keep the original selection if sanitizing emptied it (e.g. the user
+    // selected only "by" or punctuation) so we never run a blank search.
+    if (cleaned) searchTerm = cleaned;
   }
 
   const prefix = vendor.storagePrefix;

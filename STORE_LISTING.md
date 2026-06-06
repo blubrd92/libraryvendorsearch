@@ -81,6 +81,11 @@ a `<script>` tag in `options.html`), so they need no guard.
   `/catalogsearch/result/?q=` URL). Previously it relied on filling the search
   box, which silently did nothing. The content script remains as a fallback for
   the just-logged-in case.
+- If "clean up search text" empties the selection (e.g. only "by" or
+  punctuation was selected), the original selection is now used instead of
+  running a blank search (applies to all vendors).
+- The Libraria content script now disconnects its DOM observer once a search is
+  committed, instead of observing for the page's lifetime.
 
 #### 7.7.0
 - Cross-store publishing infrastructure: two-zip build (`npm run

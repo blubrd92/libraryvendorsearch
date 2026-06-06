@@ -1,5 +1,13 @@
 (function() {
   let hasRun = false;
+  let observer = null;
+
+  function stopObserving() {
+    if (observer) {
+      observer.disconnect();
+      observer = null;
+    }
+  }
 
   // Try several common search-box shapes rather than depending on one exact id,
   // so a markup change on Libraria doesn't silently break the fill.
@@ -43,6 +51,7 @@
       // search already ran — just clear the pending term and stop.
       if (location.pathname.includes('/catalogsearch/result')) {
         hasRun = true;
+        stopObserving();
         browser.runtime.sendMessage({ action: 'searchSuccess', vendor: 'libraria' });
         return;
       }
@@ -57,6 +66,7 @@
       }
 
       hasRun = true;
+      stopObserving();
 
       searchInput.focus();
       searchInput.value = searchTerm;
@@ -92,11 +102,14 @@
     performSearch();
   }
 
-  // Also watch for SPA-style navigation / late-rendered search bar.
-  const observer = new MutationObserver(() => {
-    if (!hasRun && findSearchInput()) {
-      performSearch();
-    }
-  });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
+  // Also watch for SPA-style navigation / late-rendered search bar. The observer
+  // disconnects itself via stopObserving() once a search is committed.
+  if (!hasRun) {
+    observer = new MutationObserver(() => {
+      if (!hasRun && findSearchInput()) {
+        performSearch();
+      }
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+  }
 })();
