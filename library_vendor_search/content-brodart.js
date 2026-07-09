@@ -3,50 +3,49 @@
 
   function performSearch() {
     if (hasRun) return;
-    
-    chrome.storage.local.get(["brodartSearchTerm"], (result) => {
+
+    browser.storage.local.get(["brodartSearchTerm"]).then((result) => {
       const searchTerm = result.brodartSearchTerm;
-      
-      if (searchTerm) {
-        const searchInput = document.getElementById("quicksearch");
-        const searchButton = document.getElementById("quickSearchInput");
-        
-        // Graceful Handling: If we are on the login page (inputs missing), do nothing.
-        // The background script will keep 'pending' true.
-        if (!searchInput || !searchButton) {
-          console.log("Library Vendor Search: Waiting for login or navigation to dashboard...");
-          return;
+      if (!searchTerm) return;
+
+      const searchInput = document.getElementById("quicksearch");
+      const searchButton = document.getElementById("quickSearchInput");
+
+      // Graceful Handling: If we are on the login page (inputs missing), do nothing.
+      // The background script will keep 'pending' true.
+      if (!searchInput || !searchButton) {
+        console.log("Library Vendor Search: Waiting for login or navigation to dashboard...");
+        return;
+      }
+
+      hasRun = true;
+
+      // Input the search term and wake up the page scripts
+      searchInput.value = searchTerm;
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      searchInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+      // Robust click mechanism
+      let attempts = 0;
+      const maxAttempts = 10;
+
+      const clickInterval = setInterval(() => {
+        attempts++;
+
+        if (searchInput.value === searchTerm) {
+          searchButton.click();
+          clearInterval(clickInterval);
+          // Notify background to clear storage now that we succeeded
+          browser.runtime.sendMessage({ action: 'searchSuccess', vendor: 'brodart' });
+        } else {
+          searchInput.value = searchTerm;
         }
 
-        hasRun = true;
-        
-        // Input the search term and wake up the page scripts
-        searchInput.value = searchTerm;
-        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-        searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-        
-        // Robust click mechanism
-        let attempts = 0;
-        const maxAttempts = 10;
-        
-        const clickInterval = setInterval(() => {
-          attempts++;
-          
-          if (searchInput.value === searchTerm) {
-            searchButton.click();
-            clearInterval(clickInterval);
-            // Notify background to clear storage now that we succeeded
-            chrome.runtime.sendMessage({ action: 'searchSuccess', vendor: 'brodart' });
-          } else {
-            searchInput.value = searchTerm;
-          }
-          
-          if (attempts >= maxAttempts) {
-            clearInterval(clickInterval);
-            console.warn("Library Vendor Search: Timed out waiting to click Brodart search button.");
-          }
-        }, 100);
-      }
+        if (attempts >= maxAttempts) {
+          clearInterval(clickInterval);
+          console.warn("Library Vendor Search: Timed out waiting to click Brodart search button.");
+        }
+      }, 100);
     });
   }
 

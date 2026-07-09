@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Library Vendor Search",
-  "version": "7.6.0",
+  "version": "7.7.1",
   "description": "Select text, right-click, and search Ingram, Brodart, or Libraria.",
   "permissions": [
     "contextMenus",
@@ -10,6 +10,7 @@
   "background": {
     "service_worker": "background.js",
     "scripts": [
+      "vendor/browser-polyfill.min.js",
       "background.js"
     ]
   },
@@ -19,6 +20,7 @@
         "https://ipage.ingramcontent.com/*"
       ],
       "js": [
+        "vendor/browser-polyfill.min.js",
         "content.js"
       ],
       "run_at": "document_end"
@@ -28,6 +30,7 @@
         "https://www.bibz2.com/*"
       ],
       "js": [
+        "vendor/browser-polyfill.min.js",
         "content-brodart.js"
       ],
       "run_at": "document_start"
@@ -37,6 +40,7 @@
         "https://www.libraria.com/*"
       ],
       "js": [
+        "vendor/browser-polyfill.min.js",
         "content-libraria.js"
       ],
       "run_at": "document_end"
@@ -54,7 +58,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "library-vendor-search@your-library.org",
-      "strict_min_version": "109.0",
+      "strict_min_version": "140.0",
       "data_collection_permissions": {
         "required": [
           "none"
