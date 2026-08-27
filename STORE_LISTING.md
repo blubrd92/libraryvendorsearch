@@ -134,6 +134,67 @@ a `<script>` tag in `options.html`), so they need no guard.
 
 ---
 
+## Store description & summary (canonical copy)
+
+**This is the one copy.** Every store's description comes from here — paste it
+and don't rewrite per store, or the three listings drift. Update this section in
+the same commit that adds or removes a source, exactly like the release notes.
+
+Where each piece goes:
+
+| Store | Field | Limit | Paste |
+|-------|-------|-------|-------|
+| Chrome | Short description | 132 chars | manifest `description` (below) |
+| Chrome | Detailed description | 16,000 chars | **Long description** |
+| Edge | Short description | 132 chars | manifest `description` (below) |
+| Edge | Description | 250–10,000 chars | **Long description** |
+| AMO | Summary | 250 chars | **Summary** |
+| AMO | Description | — | **Long description** |
+
+Chrome and Edge take the short description straight from `manifest.json`
+`description`, so changing it there changes both listings on the next upload.
+AMO's Summary is a separate field with no manifest equivalent.
+
+### Short description (mirrors `manifest.json` `description`, 98 chars, limit 132)
+```
+Select text, right-click, and search Ingram, Brodart, Libraria, WorldCat, or your library catalog.
+```
+
+### Summary — AMO only (192 chars, limit 250)
+```
+Highlight a title, author, or ISBN on any page, right-click, and search it on Ingram, Brodart, Libraria, WorldCat, or your library's own BiblioCommons catalog, with the term already filled in.
+```
+
+### Long description (1,366 chars; Edge needs ≥250, Chrome allows ≤16,000)
+```
+Library Vendor Search is a right-click tool for librarians and acquisitions
+staff. Highlight any text on a web page — a title, an author, an ISBN —
+right-click it, and pick where to search. The extension opens that site in a new
+tab with your selected term already entered, saving you the copy-paste round
+trip.
+
+Book vendors: Ingram (ipage), Brodart (Bibz), and Libraria — the purchasing
+portals you order from, reached through your library's existing login.
+
+Lookup sources: WorldCat, for checking holdings and editions with no account
+needed, and your own library's catalog. Enter your library's BiblioCommons
+address in the popup once and your catalog joins the right-click menu alongside
+the vendors.
+
+Everything is set from the toolbar popup. Turn individual sources on or off. Add
+a single "Search all vendors" item that opens every enabled source at once, each
+in its own tab. Choose whether new tabs open in the foreground or the
+background. And optionally clean up the selected text — removing stray colons,
+commas, and the word "by" — before searching, which is what makes a copied
+"Dune: A Novel, by Frank Herbert" behave in a vendor search box.
+
+Your data stays on your device. The extension stores only your own preferences
+and the term you are currently searching, in the browser's own storage. Nothing
+is collected, and nothing is sent to any server.
+```
+
+---
+
 ## Per-store metadata to (re)confirm
 
 Stores sometimes re-ask for these on resubmission — keep answers handy:
@@ -290,6 +351,10 @@ Then bump the pin in `package.json` and add a release-notes entry.
 
 - `manifest.json version` ↔ this doc's **Release notes** — bump and document
   together.
+- `VENDORS` in `background.js` ↔ this doc's **Store description & summary** ↔
+  `manifest.json description` ↔ `PRIVACY.md` — adding or removing a source
+  changes what all three listings and the privacy policy claim the extension
+  does. Update them in the same commit.
 - `manifest.json background` ↔ `build-zips.mjs` strip logic — the build assumes
   the source keeps **both** background keys and deletes `scripts` only for the
   chromium variant. If you change the background shape, update the build.

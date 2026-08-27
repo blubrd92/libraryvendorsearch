@@ -68,8 +68,9 @@ This dedicated page replaced the old "privacy" box. Fill every section:
 
 ## 5. Store listing (per language — at minimum English)
 Click **Edit details** on the language row. Required:
-- **Description** — 250–10,000 characters. Paste §C below (it's already over the
-  250 minimum) and tweak to taste.
+- **Description** — 250–10,000 characters. See §C below: the text lives in
+  `STORE_LISTING.md` (Store description & summary), already over the 250
+  minimum. Edit it there, not here, so all three stores stay in step.
 - **Extension logo** — 300×300 px recommended (128×128 minimum). The repo ships
   `images/icon-128.png`; that satisfies the minimum, but exporting a **300×300**
   PNG looks sharper in the store.
@@ -131,28 +132,17 @@ selected term into that site's own search box and submit it. The extension does
 not run on any other site.
 ```
 
-### §C — Store description (≥250 chars)
-```
-Library Vendor Search is a simple right-click tool for librarians and
-acquisitions staff. Highlight any text on a web page — a title, author, or ISBN
-— right-click it, and choose a library book vendor to search. The extension
-opens the vendor's site in a new tab and drops your selected term straight into
-its search box, saving you the copy-paste round trip.
+### §C — Store description
 
-Supported vendors: Ingram (ipage), Brodart (Bibz), and Libraria. WorldCat is
-also available as a supplementary lookup source for checking holdings and
-editions — no login required — as is your own library's BiblioCommons catalog,
-once you enter its address in the popup. Use the toolbar popup to turn individual sources
-on or off, add a "Search all vendors" item that opens every enabled source at
-once, choose whether the new tab opens in the foreground or background, and
-optionally clean up selected text (removing stray colons, commas, and the word
-"by") before searching.
+**Not duplicated here.** The description is maintained once, in
+`STORE_LISTING.md` → **Store description & summary (canonical copy)**, because
+Chrome, Edge and AMO all paste the same text and three copies would drift.
 
-Your data stays on your device. The extension keeps only your vendor preferences
-and the term you're currently searching, in the browser's own storage — nothing
-is collected or sent to any server. The vendor sites themselves may require your
-library's existing login.
-```
+Open that section and paste:
+- its **Short description** into Edge's short-description field (or leave it —
+  Edge pulls it from `manifest.json` `description`, which is the same string);
+- its **Long description** into Edge's Description field. Edge requires at least
+  250 characters; the canonical copy is comfortably over.
 
 ### §D — Notes for certification (reviewer instructions)
 ```
