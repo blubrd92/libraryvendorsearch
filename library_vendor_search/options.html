@@ -228,6 +228,14 @@
       outline-offset: 2px;
     }
 
+    .row.sub {
+      padding-left: 14px;
+    }
+
+    .row.sub .name {
+      font-weight: 400;
+    }
+
     /* Text field (per-library catalog address) */
     .field {
       padding: 8px 0 2px;
@@ -386,6 +394,17 @@
       </span>
       <span class="switch">
         <input type="checkbox" id="enableSearchAll">
+        <span class="slider"></span>
+      </span>
+    </label>
+
+    <label class="row sub">
+      <span class="row-label">
+        <span class="name">Include supplementary sources</span>
+        <span class="desc">WorldCat and your catalog join the sweep</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="searchAllIncludesSupplementary">
         <span class="slider"></span>
       </span>
     </label>

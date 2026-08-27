@@ -86,10 +86,13 @@ a `<script>` tag in `options.html`), so they need no guard.
   never appears as an item that opens a broken URL.
 - Like WorldCat, this needs **no new permissions and no new host match**: the
   extension only opens a search URL and runs no script on the catalog.
-- "Search all vendors" covers the book vendors only. The supplementary sources
-  (WorldCat and your catalog) each keep their own menu item, so a sweep of who
-  to order from doesn't also open the two lookups. The sweep item is hidden
-  unless two or more vendors are enabled.
+- "Search all vendors" covers the book vendors only by default. The
+  supplementary sources each keep their own menu item, so a sweep of who to
+  order from doesn't also open the two lookups.
+- A second popup option, "Include supplementary sources", opts them back in. The
+  menu item is then named "Search all sources" so its title still matches what
+  it opens. Either way the item is hidden unless it would open more than one
+  tab.
 
 #### 7.9.0
 - New **WorldCat** source (off by default; enable it in the popup). Searching it
@@ -189,7 +192,7 @@ the vendors.
 
 Everything is set from the toolbar popup. Turn individual sources on or off. Add
 a single "Search all vendors" item that opens every enabled vendor at once, each
-in its own tab. Choose whether new tabs open in the foreground or the
+in its own tab, and choose whether the supplementary sources join it. Choose whether new tabs open in the foreground or the
 background. You can also clean up the selected text before searching, which
 removes stray colons, commas, and the word "by" so that a copied "Dune: A
 Novel, by Frank Herbert" behaves in a vendor search box.

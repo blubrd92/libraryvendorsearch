@@ -54,6 +54,14 @@ const VENDORS = [
 // not a vendor, so it deliberately lives outside the VENDORS array.
 const SEARCH_ALL_ID = "searchAllVendors";
 
+// Which sources a sweep covers. By default the vendors you order from, since
+// that is what the sweep is for; the supplementary lookups answer a different
+// question and have their own menu items. The user can opt them in.
+// createMenus and the click handler both go through here so they cannot drift.
+function fanOutTargets(enabled, includeSupplementary) {
+  return enabled.filter(v => includeSupplementary || !v.supplementary);
+}
+
 function storageKeys(prefix) {
   return [`${prefix}SearchTerm`, `${prefix}Pending`, `${prefix}TabId`];
 }
@@ -70,7 +78,7 @@ async function getMenuSettings() {
       if (v.configKey) acc[v.configKey] = '';
       return acc;
     },
-    { enableSearchAll: false }
+    { enableSearchAll: false, searchAllIncludesSupplementary: false }
   );
 
   const settings = await browser.storage.sync.get(defaults);
@@ -86,12 +94,17 @@ async function getMenuSettings() {
     return Boolean(config[v.id]);
   });
 
-  return { enabled, showSearchAll: settings.enableSearchAll, config };
+  return {
+    enabled,
+    showSearchAll: settings.enableSearchAll,
+    includeSupplementary: settings.searchAllIncludesSupplementary,
+    config
+  };
 }
 
 // Create context menus based on user settings
 async function createMenus() {
-  const { enabled, showSearchAll } = await getMenuSettings();
+  const { enabled, showSearchAll, includeSupplementary } = await getMenuSettings();
   await browser.contextMenus.removeAll();
 
   if (enabled.length === 0) return;
@@ -134,11 +147,9 @@ async function createMenus() {
     });
   });
 
-  // "Search all vendors" is a purchasing sweep, so it covers only the vendors
-  // you can order from. Supplementary sources answer a different question (do we
-  // already own this?) and are left to their own menu item. That also keeps the
-  // item's name honest. Needs two or more vendors to be worth offering.
-  const fanOut = enabled.filter(v => !v.supplementary);
+  // Offer the sweep only when it would actually open more than one tab, and
+  // name it for what it covers so the title stays honest either way.
+  const fanOut = fanOutTargets(enabled, includeSupplementary);
   if (showSearchAll && fanOut.length > 1) {
     browser.contextMenus.create({
       id: "searchAllSeparator",
@@ -149,7 +160,9 @@ async function createMenus() {
     browser.contextMenus.create({
       id: SEARCH_ALL_ID,
       parentId: "vendorParent",
-      title: `Search all vendors for '%s'`,
+      title: includeSupplementary
+        ? `Search all sources for '%s'`
+        : `Search all vendors for '%s'`,
       contexts: ["selection"]
     });
   }
@@ -232,9 +245,9 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   // Always consult getMenuSettings(): it resolves per-source config, and a
   // config-bearing source can be stale in the menu if the value was cleared
   // between the menu being built and the click.
-  const { enabled, config } = await getMenuSettings();
+  const { enabled, includeSupplementary, config } = await getMenuSettings();
   const targets = isSearchAll
-    ? enabled.filter(v => !v.supplementary) // vendors only; see createMenus
+    ? fanOutTargets(enabled, includeSupplementary)
     : enabled.filter(v => v === clickedVendor);
   if (targets.length === 0) return;
 

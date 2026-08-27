@@ -84,9 +84,11 @@ Repo-root tooling (not part of the shipped extension):
   a mismatch shows a menu item whose popup toggle renders unchecked.
 - **`supplementary: true`** groups a source below a divider in the context menu
   (and in its own popup card): a lookup you consult, not a vendor you order
-  from. It is deliberately left out of "search all", which stays a sweep of the
-  vendors you order from, and the item is hidden unless two or more of those are
-  enabled.
+  from. It is left out of "search all" unless the user opts in with
+  `searchAllIncludesSupplementary`, which also renames the item to "Search all
+  sources". `fanOutTargets()` is the single place that decides the set, shared
+  by `createMenus()` and the click handler; the item is hidden unless that set
+  would open more than one tab.
 - **`configKey` marks a source that needs a user-supplied value** (the library's
   BiblioCommons instance). `getMenuSettings()` runs the entry's
   `normalizeConfig` and drops the source from the menu (and from "search all")

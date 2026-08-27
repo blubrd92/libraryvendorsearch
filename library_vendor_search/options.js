@@ -7,6 +7,7 @@ const DEFAULTS = {
   catalogInstance: '',
   sanitizeSearch: true,
   enableSearchAll: false,
+  searchAllIncludesSupplementary: false,
   tabFocus: 'focus'
 };
 
@@ -22,6 +23,7 @@ browser.storage.sync.get(DEFAULTS).then((items) => {
   renderCatalogHint();
   document.getElementById('sanitizeSearch').checked = items.sanitizeSearch;
   document.getElementById('enableSearchAll').checked = items.enableSearchAll;
+  document.getElementById('searchAllIncludesSupplementary').checked = items.searchAllIncludesSupplementary;
 
   if (items.tabFocus === 'focus') {
     document.getElementById('focusTab').checked = true;
@@ -40,6 +42,7 @@ function saveOptions() {
     catalogInstance: document.getElementById('catalogInstance').value.trim(),
     sanitizeSearch: document.getElementById('sanitizeSearch').checked,
     enableSearchAll: document.getElementById('enableSearchAll').checked,
+    searchAllIncludesSupplementary: document.getElementById('searchAllIncludesSupplementary').checked,
     tabFocus: document.querySelector('input[name="tabFocus"]:checked').value
   };
 
@@ -60,6 +63,7 @@ document.getElementById('enableWorldcat').addEventListener('change', saveOptions
 document.getElementById('enableCatalog').addEventListener('change', () => { renderCatalogHint(); saveOptions(); });
 document.getElementById('sanitizeSearch').addEventListener('change', saveOptions);
 document.getElementById('enableSearchAll').addEventListener('change', saveOptions);
+document.getElementById('searchAllIncludesSupplementary').addEventListener('change', saveOptions);
 document.querySelectorAll('input[name="tabFocus"]').forEach(radio => {
   radio.addEventListener('change', saveOptions);
 });
