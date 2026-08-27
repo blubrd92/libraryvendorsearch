@@ -75,6 +75,15 @@ a `<script>` tag in `options.html`), so they need no guard.
 
 ### Release notes
 
+#### 7.11.0
+- "Search all vendors" now covers the book vendors only by default. WorldCat and
+  your library catalog keep their own menu items, so a sweep of where to order
+  from doesn't also open the two lookups.
+- A new popup option, "Include supplementary sources", opts them back in. The
+  menu item is then named "Search all sources" so its title matches what it
+  opens. Either way the item is hidden unless it would open more than one tab.
+- The catalog address field no longer suggests a specific library by name.
+
 #### 7.10.0
 - New **Library catalog** source (off by default): enter your library's
   BiblioCommons address in the popup and the right-click menu can search your
@@ -86,14 +95,6 @@ a `<script>` tag in `options.html`), so they need no guard.
   never appears as an item that opens a broken URL.
 - Like WorldCat, this needs **no new permissions and no new host match**: the
   extension only opens a search URL and runs no script on the catalog.
-- "Search all vendors" covers the book vendors only by default. The
-  supplementary sources each keep their own menu item, so a sweep of who to
-  order from doesn't also open the two lookups.
-- A second popup option, "Include supplementary sources", opts them back in. The
-  menu item is then named "Search all sources" so its title still matches what
-  it opens. Either way the item is hidden unless it would open more than one
-  tab.
-
 #### 7.9.0
 - New **WorldCat** source (off by default; enable it in the popup). Searching it
   opens `search.worldcat.org` with your term, which is useful for checking
