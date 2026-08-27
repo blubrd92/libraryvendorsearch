@@ -7,7 +7,8 @@ Guidance for working in this repository.
 **Library Vendor Search** — a Manifest V3 browser extension (Chrome + Firefox)
 for librarians. The user selects text on any page, right-clicks, and the
 extension opens the selected term as a search in a library book vendor's site
-(Ingram, Brodart, or Libraria) or in WorldCat.
+(Ingram, Brodart, or Libraria), in WorldCat, or in the library's own
+BiblioCommons catalog.
 
 It is plain JavaScript/HTML loaded directly as an unpacked extension — there is
 **no bundler and no test suite**. "Running" it means loading
@@ -34,6 +35,8 @@ All source lives in `library_vendor_search/`:
 - `content-libraria.js` — content script for Libraria (`libraria.com`).
 - `options.js` / `options.html` — the toolbar popup UI for toggling vendors and
   search options. Settings are saved to `browser.storage.sync`.
+- `catalog.js` — the shared BiblioCommons address validator, loaded by both the
+  background script and the options popup.
 - `vendor/browser-polyfill.min.js` — Mozilla's `webextension-polyfill`, loaded
   first by every runtime (service worker, content scripts, options page).
 - `images/` — extension icons (16/48/128).
@@ -82,6 +85,17 @@ Repo-root tooling (not part of the shipped extension):
 - **`supplementary: true`** groups a source below a divider in the context menu
   (and in its own popup card): a lookup you consult, not a vendor you order
   from. It still joins "search all" when enabled.
+- **`configKey` marks a source that needs a user-supplied value** (the library's
+  BiblioCommons instance). `getMenuSettings()` runs the entry's
+  `normalizeConfig` and drops the source from the menu — and from "search all" —
+  until it returns something usable, so a switched-on-but-unconfigured source
+  never shows an item that opens a broken URL. The resolved value is passed as
+  the second argument to `searchUrl(term, config)`.
+- **`catalog.js` holds the one copy of the BiblioCommons address validator.**
+  The popup uses it for its hint, `background.js` uses it to decide whether the
+  menu item exists and to build the URL. It is what keeps a typo (or a pasted
+  link to some other site) from becoming the opened host, so don't fork it —
+  all three runtimes load it before use.
 - **Storage split:** user preferences → `browser.storage.sync`; transient
   per-search state → `browser.storage.local`, keyed by `storagePrefix`.
 - Content scripts guard with a `hasRun` flag and tolerate missing search
@@ -108,7 +122,7 @@ The build only mutates *copies* of the manifest — never the source. See
 
 ## Bumping the version
 
-Update `version` in `manifest.json` when shipping changes (currently `7.9.0`).
+Update `version` in `manifest.json` when shipping changes (currently `7.10.0`).
 **Every store re-upload requires a new version**, and each bump must be paired
 with a matching entry in the `STORE_LISTING.md` "Release notes" section (that
 text is what stores ask you to paste). `package.json`'s `version` is cosmetic —
@@ -122,6 +136,9 @@ the build reads the shipped version from `manifest.json`.
 - polyfill load order — `background.js` `importScripts` guard,
   `content_scripts[].js[0]`, and the `options.html` `<script>` all load
   `vendor/browser-polyfill.min.js` first.
+- `catalog.js` ↔ its three loaders — `background.js` `importScripts`,
+  `manifest.json background.scripts`, and `options.html` `<script>`. Adding a
+  shared file means touching all three.
 
 ## Git / workflow
 

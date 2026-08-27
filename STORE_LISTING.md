@@ -75,6 +75,18 @@ a `<script>` tag in `options.html`), so they need no guard.
 
 ### Release notes
 
+#### 7.10.0
+- New **Library catalog** source (off by default): enter your library's
+  BiblioCommons address in the popup and the right-click menu can search your
+  own catalog alongside the vendors.
+- The address field accepts whatever you paste — `marinet`,
+  `marinet.bibliocommons.com`, or a full URL — and resolves it to the one
+  instance it will search, shown beneath the field.
+- The catalog menu item stays hidden until a valid address is entered, so it
+  never appears as an item that opens a broken URL.
+- Like WorldCat, this needs **no new permissions and no new host match**: the
+  extension only opens a search URL and runs no script on the catalog.
+
 #### 7.9.0
 - New **WorldCat** source (off by default; enable it in the popup). Searching it
   opens `search.worldcat.org` with your term — useful for checking holdings,
@@ -132,8 +144,8 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
   https://docs.google.com/document/d/e/2PACX-1vR2FNp7vnlQ37xpuu-FwKskRNwU9VLTDLO4JUV6gc9_tjwXv6yT23E3OJyV72MkeMlPoKczucsqCdR2/pub
   (mirrored in `PRIVACY.md`).
 - **Single-purpose statement** — "Lets a librarian search a selected term on a
-  library book vendor's site (Ingram, Brodart, Libraria) or in WorldCat, via the
-  right-click menu."
+  library book vendor's site (Ingram, Brodart, Libraria), in WorldCat, or in
+  their own library's BiblioCommons catalog, via the right-click menu."
 - **Permission justifications:**
   - `contextMenus` — adds the right-click "Search <Vendor>" entries.
   - `storage` — temporarily passes the selected term to the vendor tab
@@ -143,8 +155,11 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
     transmitted.
   - host matches (`ipage.ingramcontent.com`, `bibz2.com`, `libraria.com`) —
     the content scripts that fill each vendor's search box run only on those
-    sites. WorldCat adds no host match: its search is a plain results URL, so
-    the extension only opens a tab and runs no script there.
+    sites. WorldCat and the BiblioCommons catalog add no host match: their
+    searches are plain results URLs, so the extension only opens a tab and runs
+    no script there. The catalog's address comes from a `storage.sync`
+    preference the user types, and is validated to a single
+    `*.bibliocommons.com` host before use.
 - **Data collection (AMO):** manifest declares
   `data_collection_permissions: { required: ["none"] }`.
 
@@ -191,6 +206,8 @@ What to put in the two fields on AMO's "Submit a New Version" page.
 
 ```
 New in this version:
+• You can now search your own library's BiblioCommons catalog. Enter your
+  catalog address in the toolbar popup and it joins the right-click menu.
 • WorldCat is now supported as a lookup source, alongside the book vendors.
   Turn it on in the toolbar popup, then right-click a selection to check
   holdings and editions on search.worldcat.org. Unlike the vendor sites it

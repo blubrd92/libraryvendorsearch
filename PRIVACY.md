@@ -11,7 +11,8 @@ Effective Date: August 27, 2026
 
 This browser extension is a simple productivity tool designed to help users
 search for book titles on the Ingram iPage, Brodart Bibz, and Libraria websites,
-and to look titles up in WorldCat.
+to look titles up in WorldCat, and to search their own library's
+BiblioCommons catalog.
 
 ## Data Handling
 
@@ -30,14 +31,16 @@ developer or any third-party servers. All data remains on your device.
 - The extension opens a new tab to one of:
   - Ingram iPage dashboard (ipage.ingramcontent.com),
   - Brodart Bibz dashboard (www.bibz2.com),
-  - Libraria (www.libraria.com), or
-  - WorldCat (search.worldcat.org)
+  - Libraria (www.libraria.com),
+  - WorldCat (search.worldcat.org), or
+  - the BiblioCommons catalog address the user entered in the popup
+    (<your-library>.bibliocommons.com)
 - A content script, which runs only on the specific vendor URL, retrieves the
   saved title from local storage, pastes it into the search bar, and clicks the
   search button
-- WorldCat is the exception: its search is a plain results URL, so the selected
-  text is placed in that URL and the extension runs no script on WorldCat and
-  saves nothing to local storage for it
+- WorldCat and the library catalog are the exception: their searches are plain
+  results URLs, so the selected text is placed in that URL and the extension
+  runs no script on those sites and saves nothing to local storage for them
 - The text is cleared from the browser's local storage after the search is
   performed (or if the vendor tab is closed before searching)
 - These vendor websites are operated by third parties and may require your
@@ -50,7 +53,11 @@ The extension includes an options page where users can customize their
 experience. User preferences are stored using `chrome.storage.sync`, which
 includes:
 
-- Which sources to enable (Ingram, Brodart, Libraria, and/or WorldCat)
+- Which sources to enable (Ingram, Brodart, Libraria, WorldCat, and/or the
+  library catalog)
+- The library's BiblioCommons catalog address, if entered. This is stored as a
+  preference only, is used solely to build the catalog search URL, and is
+  validated to a single bibliocommons.com address before use
 - Whether to show a "Search all vendors" menu item that opens every enabled
   source at once
 - Whether new tabs should open in the foreground or background

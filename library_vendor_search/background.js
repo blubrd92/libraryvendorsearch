@@ -11,7 +11,7 @@
 // ReferenceError ("importScripts is not defined") on startup. If you refactor
 // this file, preserve it.
 if (typeof importScripts === 'function') {
-  importScripts('vendor/browser-polyfill.min.js'); // Chromium service-worker path
+  importScripts('vendor/browser-polyfill.min.js', 'catalog.js'); // Chromium service-worker path
 }
 
 const INGRAM_URL = "https://ipage.ingramcontent.com/ipage/common/contentdelivery/hm001View.action";
@@ -38,7 +38,16 @@ const VENDORS = [
   // item (and an extra tab in every "search all") on update.
   { id: "searchWorldcat", key: "enableWorldcat", label: "WorldCat", url: WORLDCAT_SEARCH_URL, storagePrefix: "worldcat",
     supplementary: true, contentScript: false, defaultEnabled: false,
-    searchUrl: (term) => `${WORLDCAT_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` }
+    searchUrl: (term) => `${WORLDCAT_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` },
+  // The library's own BiblioCommons catalog. `configKey` marks a source that
+  // needs a user-supplied value before it can be used at all: getMenuSettings()
+  // drops it from the menu (and from "search all") until normalizeConfig
+  // returns something usable, so we never show an item that opens a broken URL.
+  { id: "searchCatalog", key: "enableCatalog", label: "Library Catalog", url: null, storagePrefix: "catalog",
+    supplementary: true, contentScript: false, defaultEnabled: false,
+    configKey: "catalogInstance", normalizeConfig: normalizeBiblioCommonsInstance,
+    searchUrl: (term, instance) =>
+      `https://${instance}.${BIBLIOCOMMONS_DOMAIN}/v2/search?${new URLSearchParams({ query: term, searchType: 'smart' }).toString()}` }
 ];
 
 // Menu id for the optional "search every enabled vendor at once" entry. It is
@@ -56,15 +65,28 @@ async function getMenuSettings() {
   // drift apart — a vendor on by default here but off in the popup would show a
   // menu item whose toggle renders unchecked.
   const defaults = VENDORS.reduce(
-    (acc, v) => { acc[v.key] = v.defaultEnabled !== false; return acc; },
+    (acc, v) => {
+      acc[v.key] = v.defaultEnabled !== false;
+      if (v.configKey) acc[v.configKey] = '';
+      return acc;
+    },
     { enableSearchAll: false }
   );
 
   const settings = await browser.storage.sync.get(defaults);
-  return {
-    enabled: VENDORS.filter(v => settings[v.key]),
-    showSearchAll: settings.enableSearchAll
-  };
+
+  // config is keyed by vendor id and passed to that vendor's searchUrl().
+  const config = {};
+  const enabled = VENDORS.filter(v => {
+    if (!settings[v.key]) return false;
+    if (!v.configKey) return true;
+    config[v.id] = v.normalizeConfig(settings[v.configKey]);
+    // Switched on but not configured (or misconfigured): stay out of the menu
+    // rather than offer an item that can't build a URL.
+    return Boolean(config[v.id]);
+  });
+
+  return { enabled, showSearchAll: settings.enableSearchAll, config };
 }
 
 // Create context menus based on user settings
@@ -160,7 +182,7 @@ function sanitizeTerm(term) {
 
 // Stash the term under this vendor's prefix and open its tab. Each vendor owns
 // its own storage keys, so several of these can be in flight at once.
-async function openVendorSearch(vendor, searchTerm, index, active) {
+async function openVendorSearch(vendor, searchTerm, index, active, config) {
   const prefix = vendor.storagePrefix;
   // These keys exist only to hand the term to a content script. A source whose
   // URL already carries the term and has no content script (WorldCat) has
@@ -176,7 +198,9 @@ async function openVendorSearch(vendor, searchTerm, index, active) {
     });
   }
 
-  const targetUrl = vendor.searchUrl ? vendor.searchUrl(searchTerm) : vendor.url;
+  const targetUrl = vendor.searchUrl ? vendor.searchUrl(searchTerm, config) : vendor.url;
+  if (!targetUrl) return; // unconfigured source; getMenuSettings should have filtered it
+
   const newTab = await browser.tabs.create({ url: targetUrl, index, active });
 
   if (needsHandoff) {
@@ -200,17 +224,18 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   const shouldFocus = settings.tabFocus === 'focus';
   const searchTerm = settings.sanitizeSearch ? sanitizeTerm(selection) : selection;
 
-  let targets = [clickedVendor];
-  if (isSearchAll) {
-    ({ enabled: targets } = await getMenuSettings());
-    if (targets.length === 0) return;
-  }
+  // Always consult getMenuSettings(): it resolves per-source config, and a
+  // config-bearing source can be stale in the menu if the value was cleared
+  // between the menu being built and the click.
+  const { enabled, config } = await getMenuSettings();
+  const targets = isSearchAll ? enabled : enabled.filter(v => v === clickedVendor);
+  if (targets.length === 0) return;
 
   // Open sequentially so the tabs land in menu order, immediately right of the
   // source tab. When "focus new tab" is on, only the first tab takes focus —
   // otherwise each new tab would yank focus away from the last.
   for (let i = 0; i < targets.length; i++) {
-    await openVendorSearch(targets[i], searchTerm, tab.index + 1 + i, shouldFocus && i === 0);
+    await openVendorSearch(targets[i], searchTerm, tab.index + 1 + i, shouldFocus && i === 0, config[targets[i].id]);
   }
 });
 

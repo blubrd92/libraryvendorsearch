@@ -75,7 +75,7 @@ Click **Edit details** on the language row. Required:
   PNG looks sharper in the store.
 - **Name** and **short description** are pulled from the manifest
   (`Library Vendor Search` / "Select text, right-click, and search Ingram,
-  Brodart, Libraria, or WorldCat.").
+  Brodart, Libraria, WorldCat, or your library catalog.").
 
 Strongly recommended (improves listing quality / approval odds):
 - **Screenshots** — up to 6, at **1280×800** or 640×480. At least **one** is
@@ -107,8 +107,8 @@ Strongly recommended (improves listing quality / approval odds):
 ```
 Library Vendor Search lets a librarian highlight a term on any web page,
 right-click it, and open that term as a search on a library book vendor's
-website (Ingram, Brodart, or Libraria), or in WorldCat. That is its only
-function.
+website (Ingram, Brodart, or Libraria), in WorldCat, or in their own library's
+BiblioCommons catalog. That is its only function.
 ```
 
 ### §B — Permission justifications
@@ -141,7 +141,8 @@ its search box, saving you the copy-paste round trip.
 
 Supported vendors: Ingram (ipage), Brodart (Bibz), and Libraria. WorldCat is
 also available as a supplementary lookup source for checking holdings and
-editions — no login required. Use the toolbar popup to turn individual sources
+editions — no login required — as is your own library's BiblioCommons catalog,
+once you enter its address in the popup. Use the toolbar popup to turn individual sources
 on or off, add a "Search all vendors" item that opens every enabled source at
 once, choose whether the new tab opens in the foreground or background, and
 optionally clean up selected text (removing stray colons, commas, and the word
@@ -170,6 +171,12 @@ steps above and choose "Search WorldCat for '<your text>'". WorldCat
 (search.worldcat.org) is a public catalogue requiring no login, so this path
 shows the full behaviour end to end without a library account. For WorldCat the
 extension opens the search results URL directly and runs no script on the site.
+
+The same popup section has a "Library catalog" option with a text field for a
+BiblioCommons address (for example: marinet). It behaves the same way — the
+extension opens <address>.bibliocommons.com with the selected term and runs no
+script there. The field is validated to a single bibliocommons.com host, and
+the menu item is hidden until a valid address is entered.
 
 IMPORTANT — these are gated library-vendor portals:
 The three supported sites (ipage.ingramcontent.com, www.bibz2.com,

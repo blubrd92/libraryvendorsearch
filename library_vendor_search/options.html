@@ -228,6 +228,43 @@
       outline-offset: 2px;
     }
 
+    /* Text field (per-library catalog address) */
+    .field {
+      padding: 8px 0 2px;
+    }
+
+    .field input[type="text"] {
+      width: 100%;
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+    }
+
+    .field input[type="text"]:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      border-color: var(--accent);
+    }
+
+    .field .hint {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .field .hint.warn {
+      color: #b45309;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .field .hint.warn { color: #fbbf24; }
+    }
+
     .status {
       text-align: center;
       font-size: 11px;
@@ -309,6 +346,24 @@
         <span class="slider"></span>
       </span>
     </label>
+
+    <label class="row">
+      <span class="row-label">
+        <span class="name">Library catalog</span>
+        <span class="desc">Your library's BiblioCommons catalog</span>
+      </span>
+      <span class="switch">
+        <input type="checkbox" id="enableCatalog">
+        <span class="slider"></span>
+      </span>
+    </label>
+
+    <div class="field">
+      <input type="text" id="catalogInstance" spellcheck="false" autocapitalize="none"
+             autocomplete="off" placeholder="e.g. marinet"
+             aria-label="Your library's BiblioCommons address">
+      <span class="hint" id="catalogHint"></span>
+    </div>
   </div>
 
   <div class="card">
@@ -351,9 +406,10 @@
   </div>
 
   <div class="status" id="status">Saved</div>
-  <footer>v7.9.0</footer>
+  <footer>v7.10.0</footer>
 
   <script src="vendor/browser-polyfill.min.js"></script>
+  <script src="catalog.js"></script>
   <script src="options.js"></script>
 </body>
 </html>
