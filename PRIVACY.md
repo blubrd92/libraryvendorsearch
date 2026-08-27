@@ -78,8 +78,8 @@ The extension requires the following permissions:
   locally
 - **Access to the vendor sites** (ipage.ingramcontent.com, www.bibz2.com,
   www.libraria.com): So the extension can fill in the search box on those sites
-  only. WorldCat is deliberately absent from this list — the extension only
-  opens a WorldCat search URL and is granted no access to that site
+  only. WorldCat is deliberately absent from this list, because the extension
+  only opens a WorldCat search URL and is granted no access to that site
 
 ## Data Security
 

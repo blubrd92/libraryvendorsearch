@@ -68,7 +68,7 @@ This dedicated page replaced the old "privacy" box. Fill every section:
 
 ## 5. Store listing (per language — at minimum English)
 Click **Edit details** on the language row. Required:
-- **Description** — 250–10,000 characters. See §C below: the text lives in
+- **Description**, 250 to 10,000 characters. See §C below: the text lives in
   `STORE_LISTING.md` (Store description & summary), already over the 250
   minimum. Edit it there, not here, so all three stores stay in step.
 - **Extension logo** — 300×300 px recommended (128×128 minimum). The repo ships
@@ -139,8 +139,9 @@ not run on any other site.
 Chrome, Edge and AMO all paste the same text and three copies would drift.
 
 Open that section and paste:
-- its **Short description** into Edge's short-description field (or leave it —
-  Edge pulls it from `manifest.json` `description`, which is the same string);
+- its **Short description** into Edge's short-description field (or leave it
+  alone, since Edge pulls it from `manifest.json` `description`, which is the
+  same string);
 - its **Long description** into Edge's Description field. Edge requires at least
   250 characters; the canonical copy is comfortably over.
 
@@ -163,7 +164,7 @@ shows the full behaviour end to end without a library account. For WorldCat the
 extension opens the search results URL directly and runs no script on the site.
 
 The same popup section has a "Library catalog" option with a text field for a
-BiblioCommons address (for example: marinet). It behaves the same way — the
+BiblioCommons address (for example: marinet). It behaves the same way: the
 extension opens <address>.bibliocommons.com with the selected term and runs no
 script there. The field is validated to a single bibliocommons.com host, and
 the menu item is hidden until a valid address is entered.

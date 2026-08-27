@@ -13,7 +13,7 @@ const BIBLIOCOMMONS_DOMAIN = "bibliocommons.com";
 
 // The catalog source is per-library, so its host comes from a user-typed
 // setting. Librarians will paste whatever is in their address bar, so accept a
-// bare subdomain, a host, or a full URL — but resolve to a single lowercase
+// bare subdomain, a host, or a full URL, but resolve to a single lowercase
 // label and refuse anything else. The extension then only ever builds
 // `https://<label>.bibliocommons.com/...`, so a typo (or a pasted link to
 // somewhere else entirely) can't turn the menu item into an open redirect.
@@ -38,7 +38,7 @@ function normalizeBiblioCommonsInstance(raw) {
     // Keep the label nearest the domain, so a stray "www." prefix still works.
     host = host.slice(0, -(BIBLIOCOMMONS_DOMAIN.length + 1)).split('.').filter(Boolean).pop() ?? '';
   } else if (host.includes('.')) {
-    return ''; // some other domain — don't guess at what they meant
+    return ''; // some other domain, so don't guess at what they meant
   }
 
   return /^[a-z0-9-]+$/.test(host) ? host : '';

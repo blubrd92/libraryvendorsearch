@@ -65,9 +65,9 @@ document.querySelectorAll('input[name="tabFocus"]').forEach(radio => {
 });
 
 // The hint doubles as the only feedback that a pasted address was understood:
-// normalizeBiblioCommonsInstance (catalog.js — the same function background.js
-// uses to decide whether the menu item exists) turns a full pasted URL into the
-// one label we build from.
+// normalizeBiblioCommonsInstance (in catalog.js, the same function
+// background.js uses to decide whether the menu item exists) turns a full
+// pasted URL into the one label we build from.
 function renderCatalogHint() {
   const enabled = document.getElementById('enableCatalog').checked;
   const raw = document.getElementById('catalogInstance').value.trim();

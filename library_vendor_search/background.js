@@ -28,7 +28,7 @@ const VENDORS = [
   // the box. content-libraria.js remains a fallback for the post-login case.
   { id: "searchLibraria", key: "enableLibraria", label: "Libraria", url: LIBRARIA_URL, storagePrefix: "libraria",
     searchUrl: (term) => `${LIBRARIA_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` },
-  // WorldCat is a lookup source, not somewhere you place an order — hence
+  // WorldCat is a lookup source, not somewhere you place an order, hence
   // `supplementary`, which puts it below a divider in the menu. Its search is a
   // public results URL with no login, so unlike the vendors above it needs no
   // content script (and therefore no host match in manifest.json and no extra
@@ -62,8 +62,8 @@ function storageKeys(prefix) {
 // whether the "search all vendors" entry should be offered.
 async function getMenuSettings() {
   // Defaults come from VENDORS so background.js and options.js DEFAULTS cannot
-  // drift apart — a vendor on by default here but off in the popup would show a
-  // menu item whose toggle renders unchecked.
+  // drift apart. A vendor on by default here but off in the popup would show
+  // a menu item whose toggle renders unchecked.
   const defaults = VENDORS.reduce(
     (acc, v) => {
       acc[v.key] = v.defaultEnabled !== false;
@@ -186,7 +186,7 @@ async function openVendorSearch(vendor, searchTerm, index, active, config) {
   const prefix = vendor.storagePrefix;
   // These keys exist only to hand the term to a content script. A source whose
   // URL already carries the term and has no content script (WorldCat) has
-  // nobody to hand it to — writing them would strand a stale term in
+  // nobody to hand it to, and writing them would strand a stale term in
   // storage.local until the tab happened to be closed.
   const needsHandoff = vendor.contentScript !== false;
 
@@ -232,8 +232,8 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   if (targets.length === 0) return;
 
   // Open sequentially so the tabs land in menu order, immediately right of the
-  // source tab. When "focus new tab" is on, only the first tab takes focus —
-  // otherwise each new tab would yank focus away from the last.
+  // source tab. When "focus new tab" is on, only the first tab takes focus,
+  // since otherwise each new tab would yank focus away from the last.
   for (let i = 0; i < targets.length; i++) {
     await openVendorSearch(targets[i], searchTerm, tab.index + 1 + i, shouldFocus && i === 0, config[targets[i].id]);
   }

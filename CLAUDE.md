@@ -35,7 +35,7 @@ All source lives in `library_vendor_search/`:
 - `content-libraria.js` — content script for Libraria (`libraria.com`).
 - `options.js` / `options.html` — the toolbar popup UI for toggling vendors and
   search options. Settings are saved to `browser.storage.sync`.
-- `catalog.js` — the shared BiblioCommons address validator, loaded by both the
+- `catalog.js`: the shared BiblioCommons address validator, loaded by both the
   background script and the options popup.
 - `vendor/browser-polyfill.min.js` — Mozilla's `webextension-polyfill`, loaded
   first by every runtime (service worker, content scripts, options page).
@@ -71,31 +71,31 @@ Repo-root tooling (not part of the shipped extension):
   site's search input/button selectors, the toggle row in `options.html`, and
   the corresponding `enable<Vendor>` entries in `options.js` `DEFAULTS` and its
   read/save handlers. The optional "search all vendors" menu item needs no
-  per-vendor work — it fans out over whatever `getMenuSettings()` reports as
-  enabled.
+  per-vendor work, since it fans out over whatever `getMenuSettings()` reports
+  as enabled.
 - **A source whose search is a plain results URL needs far less.** Set
   `searchUrl` and `contentScript: false` and you skip the content script, the
-  `manifest.json` host match, and the added permission entirely — WorldCat is
+  `manifest.json` host match, and the added permission entirely. WorldCat is
   the worked example. `contentScript: false` also skips the `storage.local`
   handoff, which exists only to pass the term to a content script.
 - **Per-vendor defaults live in `VENDORS`** (`defaultEnabled: false` opts a
   source out). `getMenuSettings()` derives its defaults from that array, so it
-  cannot drift from `options.js` `DEFAULTS` — but the two must still agree, and
+  cannot drift from `options.js` `DEFAULTS`. The two must still agree, though:
   a mismatch shows a menu item whose popup toggle renders unchecked.
 - **`supplementary: true`** groups a source below a divider in the context menu
   (and in its own popup card): a lookup you consult, not a vendor you order
   from. It still joins "search all" when enabled.
 - **`configKey` marks a source that needs a user-supplied value** (the library's
   BiblioCommons instance). `getMenuSettings()` runs the entry's
-  `normalizeConfig` and drops the source from the menu — and from "search all" —
+  `normalizeConfig` and drops the source from the menu (and from "search all")
   until it returns something usable, so a switched-on-but-unconfigured source
   never shows an item that opens a broken URL. The resolved value is passed as
   the second argument to `searchUrl(term, config)`.
 - **`catalog.js` holds the one copy of the BiblioCommons address validator.**
   The popup uses it for its hint, `background.js` uses it to decide whether the
   menu item exists and to build the URL. It is what keeps a typo (or a pasted
-  link to some other site) from becoming the opened host, so don't fork it —
-  all three runtimes load it before use.
+  link to some other site) from becoming the opened host, so don't fork it.
+  All three runtimes load it before use.
 - **Storage split:** user preferences → `browser.storage.sync`; transient
   per-search state → `browser.storage.local`, keyed by `storagePrefix`.
 - Content scripts guard with a `hasRun` flag and tolerate missing search
@@ -136,7 +136,7 @@ the build reads the shipped version from `manifest.json`.
 - polyfill load order — `background.js` `importScripts` guard,
   `content_scripts[].js[0]`, and the `options.html` `<script>` all load
   `vendor/browser-polyfill.min.js` first.
-- `catalog.js` ↔ its three loaders — `background.js` `importScripts`,
+- `catalog.js` ↔ its three loaders: `background.js` `importScripts`,
   `manifest.json background.scripts`, and `options.html` `<script>`. Adding a
   shared file means touching all three.
 
