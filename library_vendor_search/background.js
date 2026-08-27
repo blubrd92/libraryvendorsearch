@@ -18,6 +18,7 @@ const INGRAM_URL = "https://ipage.ingramcontent.com/ipage/common/contentdelivery
 const BRODART_URL = "https://www.bibz2.com/ActBibzHomeManagerInit.do?actionParam=Home";
 const LIBRARIA_URL = "https://www.libraria.com/";
 const LIBRARIA_SEARCH_URL = "https://www.libraria.com/catalogsearch/result/";
+const WORLDCAT_SEARCH_URL = "https://search.worldcat.org/search";
 
 const VENDORS = [
   { id: "searchIngram",   key: "enableIngram",   label: "Ingram",   url: INGRAM_URL,   storagePrefix: "ingram" },
@@ -26,7 +27,18 @@ const VENDORS = [
   // directly (term baked in) rather than relying on the content script to fill
   // the box. content-libraria.js remains a fallback for the post-login case.
   { id: "searchLibraria", key: "enableLibraria", label: "Libraria", url: LIBRARIA_URL, storagePrefix: "libraria",
-    searchUrl: (term) => `${LIBRARIA_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` }
+    searchUrl: (term) => `${LIBRARIA_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` },
+  // WorldCat is a lookup source, not somewhere you place an order — hence
+  // `supplementary`, which puts it below a divider in the menu. Its search is a
+  // public results URL with no login, so unlike the vendors above it needs no
+  // content script (and therefore no host match in manifest.json and no extra
+  // permission). `contentScript: false` records that: with nothing on the far
+  // end to hand the term to, openVendorSearch skips the storage.local dance.
+  // defaultEnabled: false so an existing install doesn't silently gain a menu
+  // item (and an extra tab in every "search all") on update.
+  { id: "searchWorldcat", key: "enableWorldcat", label: "WorldCat", url: WORLDCAT_SEARCH_URL, storagePrefix: "worldcat",
+    supplementary: true, contentScript: false, defaultEnabled: false,
+    searchUrl: (term) => `${WORLDCAT_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` }
 ];
 
 // Menu id for the optional "search every enabled vendor at once" entry. It is
@@ -40,8 +52,11 @@ function storageKeys(prefix) {
 // Read the menu-shaping settings: which vendors the user has switched on, and
 // whether the "search all vendors" entry should be offered.
 async function getMenuSettings() {
+  // Defaults come from VENDORS so background.js and options.js DEFAULTS cannot
+  // drift apart — a vendor on by default here but off in the popup would show a
+  // menu item whose toggle renders unchecked.
   const defaults = VENDORS.reduce(
-    (acc, v) => { acc[v.key] = true; return acc; },
+    (acc, v) => { acc[v.key] = v.defaultEnabled !== false; return acc; },
     { enableSearchAll: false }
   );
 
@@ -77,7 +92,18 @@ async function createMenus() {
     contexts: ["selection"]
   });
 
-  enabled.forEach(v => {
+  enabled.forEach((v, i) => {
+    // Divider where the supplementary sources start, so they read as a separate
+    // group from the vendors you actually order from. Skipped when the menu is
+    // all one kind or the other.
+    if (v.supplementary && i > 0 && !enabled[i - 1].supplementary) {
+      browser.contextMenus.create({
+        id: "supplementarySeparator",
+        parentId: "vendorParent",
+        type: "separator",
+        contexts: ["selection"]
+      });
+    }
     browser.contextMenus.create({
       id: v.id,
       parentId: "vendorParent",
@@ -136,15 +162,26 @@ function sanitizeTerm(term) {
 // its own storage keys, so several of these can be in flight at once.
 async function openVendorSearch(vendor, searchTerm, index, active) {
   const prefix = vendor.storagePrefix;
-  await browser.storage.local.set({
-    [`${prefix}SearchTerm`]: searchTerm,
-    [`${prefix}Pending`]: true,
-    [`${prefix}TabId`]: null
-  });
+  // These keys exist only to hand the term to a content script. A source whose
+  // URL already carries the term and has no content script (WorldCat) has
+  // nobody to hand it to — writing them would strand a stale term in
+  // storage.local until the tab happened to be closed.
+  const needsHandoff = vendor.contentScript !== false;
+
+  if (needsHandoff) {
+    await browser.storage.local.set({
+      [`${prefix}SearchTerm`]: searchTerm,
+      [`${prefix}Pending`]: true,
+      [`${prefix}TabId`]: null
+    });
+  }
 
   const targetUrl = vendor.searchUrl ? vendor.searchUrl(searchTerm) : vendor.url;
   const newTab = await browser.tabs.create({ url: targetUrl, index, active });
-  await browser.storage.local.set({ [`${prefix}TabId`]: newTab.id });
+
+  if (needsHandoff) {
+    await browser.storage.local.set({ [`${prefix}TabId`]: newTab.id });
+  }
 }
 
 // Handle context menu clicks

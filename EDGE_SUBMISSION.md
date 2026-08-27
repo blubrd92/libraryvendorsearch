@@ -75,7 +75,7 @@ Click **Edit details** on the language row. Required:
   PNG looks sharper in the store.
 - **Name** and **short description** are pulled from the manifest
   (`Library Vendor Search` / "Select text, right-click, and search Ingram,
-  Brodart, or Libraria.").
+  Brodart, Libraria, or WorldCat.").
 
 Strongly recommended (improves listing quality / approval odds):
 - **Screenshots** — up to 6, at **1280×800** or 640×480. At least **one** is
@@ -83,7 +83,8 @@ Strongly recommended (improves listing quality / approval odds):
   and the popup with the vendor toggles.
 - **Small promotional tile** — 440×280 (optional).
 - **Search terms** — up to 7 phrases / 21 words, e.g. `library`, `cataloging`,
-  `book vendor`, `Ingram`, `Brodart`, `Libraria`, `acquisitions`.
+  `book vendor`, `Ingram`, `Brodart`, `Libraria`/`WorldCat`, `acquisitions`
+  (7 phrases max, so pair or drop one as needed).
 
 **Save draft**, then make sure the language row shows **Complete**.
 
@@ -106,7 +107,8 @@ Strongly recommended (improves listing quality / approval odds):
 ```
 Library Vendor Search lets a librarian highlight a term on any web page,
 right-click it, and open that term as a search on a library book vendor's
-website (Ingram, Brodart, or Libraria). That is its only function.
+website (Ingram, Brodart, or Libraria), or in WorldCat. That is its only
+function.
 ```
 
 ### §B — Permission justifications
@@ -137,10 +139,13 @@ acquisitions staff. Highlight any text on a web page — a title, author, or ISB
 opens the vendor's site in a new tab and drops your selected term straight into
 its search box, saving you the copy-paste round trip.
 
-Supported vendors: Ingram (ipage), Brodart (Bibz), and Libraria. Use the toolbar
-popup to turn individual vendors on or off, choose whether the vendor tab opens
-in the foreground or background, and optionally clean up selected text (removing
-stray colons, commas, and the word "by") before searching.
+Supported vendors: Ingram (ipage), Brodart (Bibz), and Libraria. WorldCat is
+also available as a supplementary lookup source for checking holdings and
+editions — no login required. Use the toolbar popup to turn individual sources
+on or off, add a "Search all vendors" item that opens every enabled source at
+once, choose whether the new tab opens in the foreground or background, and
+optionally clean up selected text (removing stray colons, commas, and the word
+"by") before searching.
 
 Your data stays on your device. The extension keeps only your vendor preferences
 and the term you're currently searching, in the browser's own storage — nothing
@@ -158,6 +163,13 @@ HOW TO TEST
    "Search <Vendor>" item if only one vendor is enabled in the popup).
 3. Click one of them. A new tab opens to that vendor's website. The extension
    then types your selected text into that site's search box and submits it.
+
+NO ACCOUNT? TEST WITH WORLDCAT:
+Open the toolbar popup, enable "WorldCat" under Supplementary, then repeat the
+steps above and choose "Search WorldCat for '<your text>'". WorldCat
+(search.worldcat.org) is a public catalogue requiring no login, so this path
+shows the full behaviour end to end without a library account. For WorldCat the
+extension opens the search results URL directly and runs no script on the site.
 
 IMPORTANT — these are gated library-vendor portals:
 The three supported sites (ipage.ingramcontent.com, www.bibz2.com,

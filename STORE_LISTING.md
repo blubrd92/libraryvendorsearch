@@ -75,6 +75,16 @@ a `<script>` tag in `options.html`), so they need no guard.
 
 ### Release notes
 
+#### 7.9.0
+- New **WorldCat** source (off by default; enable it in the popup). Searching it
+  opens `search.worldcat.org` with your term — useful for checking holdings,
+  editions, and who else owns a title.
+- WorldCat is grouped separately from the vendors in both the popup and the
+  right-click menu: it's a lookup source, not somewhere you place an order. When
+  enabled it does take part in "Search all vendors".
+- WorldCat needs **no new permissions and no new host match** — its search is a
+  public results URL, so unlike the vendor sites it uses no content script.
+
 #### 7.8.0
 - New **"Search all vendors"** option in the popup (off by default). Turn it on
   and the right-click menu gains a "Search all vendors for '<term>'" entry that
@@ -122,8 +132,8 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
   https://docs.google.com/document/d/e/2PACX-1vR2FNp7vnlQ37xpuu-FwKskRNwU9VLTDLO4JUV6gc9_tjwXv6yT23E3OJyV72MkeMlPoKczucsqCdR2/pub
   (mirrored in `PRIVACY.md`).
 - **Single-purpose statement** — "Lets a librarian search a selected term on a
-  library book vendor's site (Ingram, Brodart, Libraria) via the right-click
-  menu."
+  library book vendor's site (Ingram, Brodart, Libraria) or in WorldCat, via the
+  right-click menu."
 - **Permission justifications:**
   - `contextMenus` — adds the right-click "Search <Vendor>" entries.
   - `storage` — temporarily passes the selected term to the vendor tab
@@ -133,7 +143,8 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
     transmitted.
   - host matches (`ipage.ingramcontent.com`, `bibz2.com`, `libraria.com`) —
     the content scripts that fill each vendor's search box run only on those
-    sites.
+    sites. WorldCat adds no host match: its search is a plain results URL, so
+    the extension only opens a tab and runs no script there.
 - **Data collection (AMO):** manifest declares
   `data_collection_permissions: { required: ["none"] }`.
 
@@ -180,6 +191,10 @@ What to put in the two fields on AMO's "Submit a New Version" page.
 
 ```
 New in this version:
+• WorldCat is now supported as a lookup source, alongside the book vendors.
+  Turn it on in the toolbar popup, then right-click a selection to check
+  holdings and editions on search.worldcat.org. Unlike the vendor sites it
+  needs no login.
 • Libraria is now supported as a third book vendor. Highlight a title,
   right-click, and search Ingram, Brodart, or Libraria.
 • Settings now live in the toolbar popup: turn each vendor on or off, choose
@@ -211,6 +226,14 @@ HOW TO TEST
    one vendor is enabled in the toolbar popup).
 3. A new tab opens to the vendor's site and your selected text is entered into
    that site's search box and submitted.
+
+NO ACCOUNT? TEST WITH WORLDCAT:
+Open the toolbar popup and enable "WorldCat" under Supplementary, then repeat
+the steps above and choose "Search WorldCat for '<your text>'". WorldCat
+(search.worldcat.org) is a public catalogue that needs no login, so this path
+demonstrates the extension's full behaviour end to end without a library
+account. The extension opens the results URL directly and runs no script on
+that site.
 
 PLEASE NOTE — gated vendor portals:
 The three vendor sites (ipage.ingramcontent.com, www.bibz2.com,

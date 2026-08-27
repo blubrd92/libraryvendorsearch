@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Library Vendor Search",
-  "version": "7.8.0",
-  "description": "Select text, right-click, and search Ingram, Brodart, or Libraria.",
+  "version": "7.9.0",
+  "description": "Select text, right-click, and search Ingram, Brodart, Libraria, or WorldCat.",
   "permissions": [
     "contextMenus",
     "storage"

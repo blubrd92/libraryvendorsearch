@@ -7,7 +7,7 @@ Guidance for working in this repository.
 **Library Vendor Search** — a Manifest V3 browser extension (Chrome + Firefox)
 for librarians. The user selects text on any page, right-clicks, and the
 extension opens the selected term as a search in a library book vendor's site
-(Ingram, Brodart, or Libraria).
+(Ingram, Brodart, or Libraria) or in WorldCat.
 
 It is plain JavaScript/HTML loaded directly as an unpacked extension — there is
 **no bundler and no test suite**. "Running" it means loading
@@ -70,6 +70,18 @@ Repo-root tooling (not part of the shipped extension):
   read/save handlers. The optional "search all vendors" menu item needs no
   per-vendor work — it fans out over whatever `getMenuSettings()` reports as
   enabled.
+- **A source whose search is a plain results URL needs far less.** Set
+  `searchUrl` and `contentScript: false` and you skip the content script, the
+  `manifest.json` host match, and the added permission entirely — WorldCat is
+  the worked example. `contentScript: false` also skips the `storage.local`
+  handoff, which exists only to pass the term to a content script.
+- **Per-vendor defaults live in `VENDORS`** (`defaultEnabled: false` opts a
+  source out). `getMenuSettings()` derives its defaults from that array, so it
+  cannot drift from `options.js` `DEFAULTS` — but the two must still agree, and
+  a mismatch shows a menu item whose popup toggle renders unchecked.
+- **`supplementary: true`** groups a source below a divider in the context menu
+  (and in its own popup card): a lookup you consult, not a vendor you order
+  from. It still joins "search all" when enabled.
 - **Storage split:** user preferences → `browser.storage.sync`; transient
   per-search state → `browser.storage.local`, keyed by `storagePrefix`.
 - Content scripts guard with a `hasRun` flag and tolerate missing search
@@ -96,7 +108,7 @@ The build only mutates *copies* of the manifest — never the source. See
 
 ## Bumping the version
 
-Update `version` in `manifest.json` when shipping changes (currently `7.8.0`).
+Update `version` in `manifest.json` when shipping changes (currently `7.9.0`).
 **Every store re-upload requires a new version**, and each bump must be paired
 with a matching entry in the `STORE_LISTING.md` "Release notes" section (that
 text is what stores ask you to paste). `package.json`'s `version` is cosmetic —
