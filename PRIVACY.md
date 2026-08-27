@@ -59,7 +59,7 @@ includes:
   preference only, is used solely to build the catalog search URL, and is
   validated to a single bibliocommons.com address before use
 - Whether to show a "Search all vendors" menu item that opens every enabled
-  source at once
+  vendor at once
 - Whether new tabs should open in the foreground or background
 - Whether to clean up the selected text (removing stray colons, commas, and the
   word "by") before searching

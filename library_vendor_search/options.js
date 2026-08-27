@@ -78,7 +78,7 @@ function renderCatalogHint() {
   if (!raw) {
     hint.textContent = enabled
       ? 'Enter your catalog address to show this in the menu.'
-      : 'Paste your catalog address, e.g. marinet.bibliocommons.com';
+      : 'Paste your catalog address, e.g. yourlibrary.bibliocommons.com';
     if (enabled) hint.classList.add('warn');
     return;
   }

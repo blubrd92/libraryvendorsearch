@@ -134,7 +134,12 @@ async function createMenus() {
     });
   });
 
-  if (showSearchAll) {
+  // "Search all vendors" is a purchasing sweep, so it covers only the vendors
+  // you can order from. Supplementary sources answer a different question (do we
+  // already own this?) and are left to their own menu item. That also keeps the
+  // item's name honest. Needs two or more vendors to be worth offering.
+  const fanOut = enabled.filter(v => !v.supplementary);
+  if (showSearchAll && fanOut.length > 1) {
     browser.contextMenus.create({
       id: "searchAllSeparator",
       parentId: "vendorParent",
@@ -228,7 +233,9 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   // config-bearing source can be stale in the menu if the value was cleared
   // between the menu being built and the click.
   const { enabled, config } = await getMenuSettings();
-  const targets = isSearchAll ? enabled : enabled.filter(v => v === clickedVendor);
+  const targets = isSearchAll
+    ? enabled.filter(v => !v.supplementary) // vendors only; see createMenus
+    : enabled.filter(v => v === clickedVendor);
   if (targets.length === 0) return;
 
   // Open sequentially so the tabs land in menu order, immediately right of the

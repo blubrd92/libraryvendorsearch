@@ -71,8 +71,8 @@ Repo-root tooling (not part of the shipped extension):
   site's search input/button selectors, the toggle row in `options.html`, and
   the corresponding `enable<Vendor>` entries in `options.js` `DEFAULTS` and its
   read/save handlers. The optional "search all vendors" menu item needs no
-  per-vendor work, since it fans out over whatever `getMenuSettings()` reports
-  as enabled.
+  per-vendor work, since it fans out over the non-supplementary sources that
+  `getMenuSettings()` reports as enabled.
 - **A source whose search is a plain results URL needs far less.** Set
   `searchUrl` and `contentScript: false` and you skip the content script, the
   `manifest.json` host match, and the added permission entirely. WorldCat is
@@ -84,7 +84,9 @@ Repo-root tooling (not part of the shipped extension):
   a mismatch shows a menu item whose popup toggle renders unchecked.
 - **`supplementary: true`** groups a source below a divider in the context menu
   (and in its own popup card): a lookup you consult, not a vendor you order
-  from. It still joins "search all" when enabled.
+  from. It is deliberately left out of "search all", which stays a sweep of the
+  vendors you order from, and the item is hidden unless two or more of those are
+  enabled.
 - **`configKey` marks a source that needs a user-supplied value** (the library's
   BiblioCommons instance). `getMenuSettings()` runs the entry's
   `normalizeConfig` and drops the source from the menu (and from "search all")

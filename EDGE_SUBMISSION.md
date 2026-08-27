@@ -164,7 +164,8 @@ shows the full behaviour end to end without a library account. For WorldCat the
 extension opens the search results URL directly and runs no script on the site.
 
 The same popup section has a "Library catalog" option with a text field for a
-BiblioCommons address (for example: marinet). It behaves the same way: the
+BiblioCommons address (the short name of any BiblioCommons library, entered
+on its own). It behaves the same way: the
 extension opens <address>.bibliocommons.com with the selected term and runs no
 script there. The field is validated to a single bibliocommons.com host, and
 the menu item is hidden until a valid address is entered.

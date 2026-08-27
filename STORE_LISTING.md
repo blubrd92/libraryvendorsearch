@@ -79,21 +79,26 @@ a `<script>` tag in `options.html`), so they need no guard.
 - New **Library catalog** source (off by default): enter your library's
   BiblioCommons address in the popup and the right-click menu can search your
   own catalog alongside the vendors.
-- The address field accepts whatever you paste: `marinet`,
-  `marinet.bibliocommons.com`, or a full URL. It resolves to the one instance
-  it will search, shown beneath the field.
+- The address field accepts whatever you paste: the short name on its own,
+  `yourlibrary.bibliocommons.com`, or a full URL. It resolves to the one
+  instance it will search, shown beneath the field.
 - The catalog menu item stays hidden until a valid address is entered, so it
   never appears as an item that opens a broken URL.
 - Like WorldCat, this needs **no new permissions and no new host match**: the
   extension only opens a search URL and runs no script on the catalog.
+- "Search all vendors" covers the book vendors only. The supplementary sources
+  (WorldCat and your catalog) each keep their own menu item, so a sweep of who
+  to order from doesn't also open the two lookups. The sweep item is hidden
+  unless two or more vendors are enabled.
 
 #### 7.9.0
 - New **WorldCat** source (off by default; enable it in the popup). Searching it
   opens `search.worldcat.org` with your term, which is useful for checking
   holdings, editions, and who else owns a title.
 - WorldCat is grouped separately from the vendors in both the popup and the
-  right-click menu: it's a lookup source, not somewhere you place an order. When
-  enabled it does take part in "Search all vendors".
+  right-click menu: it's a lookup source, not somewhere you place an order. It
+  is not part of "Search all vendors", which stays a sweep of the vendors you
+  order from.
 - WorldCat needs **no new permissions and no new host match**. Its search is a
   public results URL, so unlike the vendor sites it uses no content script.
 
@@ -183,7 +188,7 @@ address in the popup once and your catalog joins the right-click menu alongside
 the vendors.
 
 Everything is set from the toolbar popup. Turn individual sources on or off. Add
-a single "Search all vendors" item that opens every enabled source at once, each
+a single "Search all vendors" item that opens every enabled vendor at once, each
 in its own tab. Choose whether new tabs open in the foreground or the
 background. You can also clean up the selected text before searching, which
 removes stray colons, commas, and the word "by" so that a copied "Dune: A
