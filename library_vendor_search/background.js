@@ -29,20 +29,38 @@ const VENDORS = [
     searchUrl: (term) => `${LIBRARIA_SEARCH_URL}?${new URLSearchParams({ q: term }).toString()}` }
 ];
 
+// Menu id for the optional "search every enabled vendor at once" entry. It is
+// not a vendor, so it deliberately lives outside the VENDORS array.
+const SEARCH_ALL_ID = "searchAllVendors";
+
 function storageKeys(prefix) {
   return [`${prefix}SearchTerm`, `${prefix}Pending`, `${prefix}TabId`];
 }
 
-// Create context menus based on user settings
-async function createMenus() {
-  const defaults = VENDORS.reduce((acc, v) => { acc[v.key] = true; return acc; }, {});
+// Read the menu-shaping settings: which vendors the user has switched on, and
+// whether the "search all vendors" entry should be offered.
+async function getMenuSettings() {
+  const defaults = VENDORS.reduce(
+    (acc, v) => { acc[v.key] = true; return acc; },
+    { enableSearchAll: false }
+  );
 
   const settings = await browser.storage.sync.get(defaults);
+  return {
+    enabled: VENDORS.filter(v => settings[v.key]),
+    showSearchAll: settings.enableSearchAll
+  };
+}
+
+// Create context menus based on user settings
+async function createMenus() {
+  const { enabled, showSearchAll } = await getMenuSettings();
   await browser.contextMenus.removeAll();
 
-  const enabled = VENDORS.filter(v => settings[v.key]);
   if (enabled.length === 0) return;
 
+  // With a single vendor enabled, "search all" would just duplicate that one
+  // entry, so keep the flat single-item menu regardless of the setting.
   if (enabled.length === 1) {
     const v = enabled[0];
     browser.contextMenus.create({
@@ -67,6 +85,21 @@ async function createMenus() {
       contexts: ["selection"]
     });
   });
+
+  if (showSearchAll) {
+    browser.contextMenus.create({
+      id: "searchAllSeparator",
+      parentId: "vendorParent",
+      type: "separator",
+      contexts: ["selection"]
+    });
+    browser.contextMenus.create({
+      id: SEARCH_ALL_ID,
+      parentId: "vendorParent",
+      title: `Search all vendors for '%s'`,
+      contexts: ["selection"]
+    });
+  }
 }
 
 browser.runtime.onInstalled.addListener(() => {
@@ -88,29 +121,20 @@ browser.runtime.onMessage.addListener((message) => {
   // message channel should not be kept open (returning a Promise would).
 });
 
-// Handle context menu clicks
-browser.contextMenus.onClicked.addListener(async (info, tab) => {
-  let searchTerm = info.selectionText;
-  const vendor = VENDORS.find(v => v.id === info.menuItemId);
-  if (!vendor || !searchTerm) return;
+function sanitizeTerm(term) {
+  const cleaned = term
+    .replace(/[:,]/g, ' ')
+    .replace(/\bby\b/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  // Keep the original selection if sanitizing emptied it (e.g. the user
+  // selected only "by" or punctuation) so we never run a blank search.
+  return cleaned || term;
+}
 
-  const settings = await browser.storage.sync.get({
-    tabFocus: 'focus',
-    sanitizeSearch: true
-  });
-  const shouldFocus = settings.tabFocus === 'focus';
-
-  if (settings.sanitizeSearch) {
-    const cleaned = searchTerm
-      .replace(/[:,]/g, ' ')
-      .replace(/\bby\b/gi, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-    // Keep the original selection if sanitizing emptied it (e.g. the user
-    // selected only "by" or punctuation) so we never run a blank search.
-    if (cleaned) searchTerm = cleaned;
-  }
-
+// Stash the term under this vendor's prefix and open its tab. Each vendor owns
+// its own storage keys, so several of these can be in flight at once.
+async function openVendorSearch(vendor, searchTerm, index, active) {
   const prefix = vendor.storagePrefix;
   await browser.storage.local.set({
     [`${prefix}SearchTerm`]: searchTerm,
@@ -119,12 +143,38 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   });
 
   const targetUrl = vendor.searchUrl ? vendor.searchUrl(searchTerm) : vendor.url;
-  const newTab = await browser.tabs.create({
-    url: targetUrl,
-    index: tab.index + 1,
-    active: shouldFocus
-  });
+  const newTab = await browser.tabs.create({ url: targetUrl, index, active });
   await browser.storage.local.set({ [`${prefix}TabId`]: newTab.id });
+}
+
+// Handle context menu clicks
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
+  const selection = info.selectionText;
+  if (!selection) return;
+
+  const isSearchAll = info.menuItemId === SEARCH_ALL_ID;
+  const clickedVendor = VENDORS.find(v => v.id === info.menuItemId);
+  if (!isSearchAll && !clickedVendor) return;
+
+  const settings = await browser.storage.sync.get({
+    tabFocus: 'focus',
+    sanitizeSearch: true
+  });
+  const shouldFocus = settings.tabFocus === 'focus';
+  const searchTerm = settings.sanitizeSearch ? sanitizeTerm(selection) : selection;
+
+  let targets = [clickedVendor];
+  if (isSearchAll) {
+    ({ enabled: targets } = await getMenuSettings());
+    if (targets.length === 0) return;
+  }
+
+  // Open sequentially so the tabs land in menu order, immediately right of the
+  // source tab. When "focus new tab" is on, only the first tab takes focus —
+  // otherwise each new tab would yank focus away from the last.
+  for (let i = 0; i < targets.length; i++) {
+    await openVendorSearch(targets[i], searchTerm, tab.index + 1 + i, shouldFocus && i === 0);
+  }
 });
 
 // Clean up if user closes the vendor tab without logging in

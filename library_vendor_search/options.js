@@ -3,6 +3,7 @@ const DEFAULTS = {
   enableBrodart: true,
   enableLibraria: true,
   sanitizeSearch: true,
+  enableSearchAll: false,
   tabFocus: 'focus'
 };
 
@@ -13,6 +14,7 @@ browser.storage.sync.get(DEFAULTS).then((items) => {
   document.getElementById('enableBrodart').checked = items.enableBrodart;
   document.getElementById('enableLibraria').checked = items.enableLibraria;
   document.getElementById('sanitizeSearch').checked = items.sanitizeSearch;
+  document.getElementById('enableSearchAll').checked = items.enableSearchAll;
 
   if (items.tabFocus === 'focus') {
     document.getElementById('focusTab').checked = true;
@@ -27,6 +29,7 @@ function saveOptions() {
     enableBrodart: document.getElementById('enableBrodart').checked,
     enableLibraria: document.getElementById('enableLibraria').checked,
     sanitizeSearch: document.getElementById('sanitizeSearch').checked,
+    enableSearchAll: document.getElementById('enableSearchAll').checked,
     tabFocus: document.querySelector('input[name="tabFocus"]:checked').value
   };
 
@@ -44,6 +47,7 @@ document.getElementById('enableIngram').addEventListener('change', saveOptions);
 document.getElementById('enableBrodart').addEventListener('change', saveOptions);
 document.getElementById('enableLibraria').addEventListener('change', saveOptions);
 document.getElementById('sanitizeSearch').addEventListener('change', saveOptions);
+document.getElementById('enableSearchAll').addEventListener('change', saveOptions);
 document.querySelectorAll('input[name="tabFocus"]').forEach(radio => {
   radio.addEventListener('change', saveOptions);
 });

@@ -75,6 +75,17 @@ a `<script>` tag in `options.html`), so they need no guard.
 
 ### Release notes
 
+#### 7.8.0
+- New **"Search all vendors"** option in the popup (off by default). Turn it on
+  and the right-click menu gains a "Search all vendors for '<term>'" entry that
+  opens each enabled vendor in its own tab, in menu order, immediately to the
+  right of the current tab.
+- With "focus new tab" selected, only the first of those tabs takes focus, so
+  the remaining vendors load in the background instead of stealing focus one
+  after another.
+- The entry only appears when two or more vendors are enabled — with a single
+  vendor it would duplicate that vendor's own menu item.
+
 #### 7.7.1
 - Fixed Libraria search: the extension now opens Libraria's results page
   directly with the search term (Libraria is a Magento store, so search is a
@@ -117,8 +128,9 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
   - `contextMenus` — adds the right-click "Search <Vendor>" entries.
   - `storage` — temporarily passes the selected term to the vendor tab
     (`storage.local`, cleared after the search) and saves user preferences —
-    enabled vendors, foreground/background tab, clean-up-text option
-    (`storage.sync`). Nothing is collected or transmitted.
+    enabled vendors, foreground/background tab, clean-up-text option,
+    search-all-vendors option (`storage.sync`). Nothing is collected or
+    transmitted.
   - host matches (`ipage.ingramcontent.com`, `bibz2.com`, `libraria.com`) —
     the content scripts that fill each vendor's search box run only on those
     sites.

@@ -67,7 +67,9 @@ Repo-root tooling (not part of the shipped extension):
   host match in `manifest.json`, a new `content-<vendor>.js` that knows that
   site's search input/button selectors, the toggle row in `options.html`, and
   the corresponding `enable<Vendor>` entries in `options.js` `DEFAULTS` and its
-  read/save handlers.
+  read/save handlers. The optional "search all vendors" menu item needs no
+  per-vendor work — it fans out over whatever `getMenuSettings()` reports as
+  enabled.
 - **Storage split:** user preferences → `browser.storage.sync`; transient
   per-search state → `browser.storage.local`, keyed by `storagePrefix`.
 - Content scripts guard with a `hasRun` flag and tolerate missing search
@@ -94,7 +96,7 @@ The build only mutates *copies* of the manifest — never the source. See
 
 ## Bumping the version
 
-Update `version` in `manifest.json` when shipping changes (currently `7.7.1`).
+Update `version` in `manifest.json` when shipping changes (currently `7.8.0`).
 **Every store re-upload requires a new version**, and each bump must be paired
 with a matching entry in the `STORE_LISTING.md` "Release notes" section (that
 text is what stores ask you to paste). `package.json`'s `version` is cosmetic —
@@ -111,5 +113,5 @@ the build reads the shipped version from `manifest.json`.
 
 ## Git / workflow
 
-Active development branch for agent work: `claude/intelligent-bohr-wFcVn`.
+Active development branch for agent work: `claude/project-setup-rilkes`.
 Do not open a pull request unless explicitly asked.
