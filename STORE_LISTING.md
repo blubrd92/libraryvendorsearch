@@ -76,77 +76,49 @@ a `<script>` tag in `options.html`), so they need no guard.
 ### Release notes
 
 #### 7.11.0
-- "Search all vendors" now covers the book vendors only by default. WorldCat and
-  your library catalog keep their own menu items, so a sweep of where to order
-  from doesn't also open the two lookups.
-- A new popup option, "Include supplementary sources", opts them back in. The
-  menu item is then named "Search all sources" so its title matches what it
-  opens. Either way the item is hidden unless it would open more than one tab.
+- "Search all vendors" now covers the book vendors only by default. WorldCat and your library catalog keep their own menu items, so a sweep of where to order from doesn't also open the two lookups.
+- A new popup option, "Include supplementary sources", opts them back in. The menu item is then named "Search all sources" so its title matches what it opens. Either way the item is hidden unless it would open more than one tab.
 - The catalog address field no longer suggests a specific library by name.
 
 #### 7.10.0
-- New **Library catalog** source (off by default): enter your library's
-  BiblioCommons address in the popup and the right-click menu can search your
-  own catalog alongside the vendors.
-- The address field accepts whatever you paste: the short name on its own,
-  `yourlibrary.bibliocommons.com`, or a full URL. It resolves to the one
-  instance it will search, shown beneath the field.
-- The catalog menu item stays hidden until a valid address is entered, so it
-  never appears as an item that opens a broken URL.
-- Like WorldCat, this needs **no new permissions and no new host match**: the
-  extension only opens a search URL and runs no script on the catalog.
+- New **Library catalog** source (off by default): enter your library's BiblioCommons address in the popup and the right-click menu can search your own catalog alongside the vendors.
+- The address field accepts whatever you paste: the short name on its own, `yourlibrary.bibliocommons.com`, or a full URL. It resolves to the one instance it will search, shown beneath the field.
+- The catalog menu item stays hidden until a valid address is entered, so it never appears as an item that opens a broken URL.
+- Like WorldCat, this needs **no new permissions and no new host match**: the extension only opens a search URL and runs no script on the catalog.
 #### 7.9.0
-- New **WorldCat** source (off by default; enable it in the popup). Searching it
-  opens `search.worldcat.org` with your term, which is useful for checking
-  holdings, editions, and who else owns a title.
-- WorldCat is grouped separately from the vendors in both the popup and the
-  right-click menu: it's a lookup source, not somewhere you place an order. It
-  is not part of "Search all vendors", which stays a sweep of the vendors you
-  order from.
-- WorldCat needs **no new permissions and no new host match**. Its search is a
-  public results URL, so unlike the vendor sites it uses no content script.
+- New **WorldCat** source (off by default; enable it in the popup). Searching it opens `search.worldcat.org` with your term, which is useful for checking holdings, editions, and who else owns a title.
+- WorldCat is grouped separately from the vendors in both the popup and the right-click menu: it's a lookup source, not somewhere you place an order. It is not part of "Search all vendors", which stays a sweep of the vendors you order from.
+- WorldCat needs **no new permissions and no new host match**. Its search is a public results URL, so unlike the vendor sites it uses no content script.
 
 #### 7.8.0
-- New **"Search all vendors"** option in the popup (off by default). Turn it on
-  and the right-click menu gains a "Search all vendors for '<term>'" entry that
-  opens each enabled vendor in its own tab, in menu order, immediately to the
-  right of the current tab.
-- With "focus new tab" selected, only the first of those tabs takes focus, so
-  the remaining vendors load in the background instead of stealing focus one
-  after another.
-- The entry only appears when two or more vendors are enabled. With a single
-  vendor it would duplicate that vendor's own menu item.
+- New **"Search all vendors"** option in the popup (off by default). Turn it on and the right-click menu gains a "Search all vendors for '<term>'" entry that opens each enabled vendor in its own tab, in menu order, immediately to the right of the current tab.
+- With "focus new tab" selected, only the first of those tabs takes focus, so the remaining vendors load in the background instead of stealing focus one after another.
+- The entry only appears when two or more vendors are enabled. With a single vendor it would duplicate that vendor's own menu item.
 
 #### 7.7.1
-- Fixed Libraria search: the extension now opens Libraria's results page
-  directly with the search term (Libraria is a Magento store, so search is a
-  `/catalogsearch/result/?q=` URL). Previously it relied on filling the search
-  box, which silently did nothing. The content script remains as a fallback for
-  the just-logged-in case.
-- If "clean up search text" empties the selection (e.g. only "by" or
-  punctuation was selected), the original selection is now used instead of
-  running a blank search (applies to all vendors).
-- The Libraria content script now disconnects its DOM observer once a search is
-  committed, instead of observing for the page's lifetime.
-- "Clean up search text" now defaults to **on** for new installs (existing users
-  keep whatever they chose). It can still be toggled off in the popup.
+- Fixed Libraria search: the extension now opens Libraria's results page directly with the search term (Libraria is a Magento store, so search is a `/catalogsearch/result/?q=` URL). Previously it relied on filling the search box, which silently did nothing. The content script remains as a fallback for the just-logged-in case.
+- If "clean up search text" empties the selection (e.g. only "by" or punctuation was selected), the original selection is now used instead of running a blank search (applies to all vendors).
+- The Libraria content script now disconnects its DOM observer once a search is committed, instead of observing for the page's lifetime.
+- "Clean up search text" now defaults to **on** for new installs (existing users keep whatever they chose). It can still be toggled off in the popup.
 
 #### 7.7.0
-- Cross-store publishing infrastructure: two-zip build (`npm run
-  package:extension`) producing Firefox and Chromium/Edge packages from one
-  source.
-- Migrated the codebase from callback-style `chrome.*` to promise-based
-  `browser.*` via Mozilla's `webextension-polyfill` (bundled in `vendor/`).
-- Fixed the Firefox `strict_min_version` to `140.0` so it matches the declared
-  `data_collection_permissions` feature (AMO would otherwise reject the
-  mismatch). Note: this drops support for Firefox 109–139.
+- Cross-store publishing infrastructure: two-zip build (`npm run package:extension`) producing Firefox and Chromium/Edge packages from one source.
+- Migrated the codebase from callback-style `chrome.*` to promise-based `browser.*` via Mozilla's `webextension-polyfill` (bundled in `vendor/`).
+- Fixed the Firefox `strict_min_version` to `140.0` so it matches the declared `data_collection_permissions` feature (AMO would otherwise reject the mismatch). Note: this drops support for Firefox 109–139.
 
 ---
 
 ## Store description & summary (canonical copy)
 
 **This is the one copy.** Every store's description comes from here. Paste it
-and don't rewrite per store, or the three listings drift. Update this section in
+and don't rewrite per store, or the three listings drift.
+
+**Do not re-wrap the fenced blocks.** Everything inside them is meant to be
+copied straight into a store form field, so each paragraph and each bullet is
+one long line on purpose. Hard-wrapping them puts the line breaks into the
+field. The same goes for the release-notes bullets above and for the paste
+blocks in `EDGE_SUBMISSION.md`. Plain punctuation only in that text, no em
+dashes. Update this section in
 the same commit that adds or removes a source, exactly like the release notes.
 
 Where each piece goes:
@@ -176,31 +148,15 @@ Highlight a title, author, or ISBN on any page, right-click, and search it on In
 
 ### Long description (1,366 chars; Edge needs at least 250, Chrome allows up to 16,000)
 ```
-Library Vendor Search is a right-click tool for librarians and acquisitions
-staff. Highlight any text on a web page (a title, an author, an ISBN),
-right-click it, and pick where to search. The extension opens that site in a new
-tab with your selected term already entered, saving you the copy-paste round
-trip.
+Library Vendor Search is a right-click tool for librarians and acquisitions staff. Highlight any text on a web page (a title, an author, an ISBN), right-click it, and pick where to search. The extension opens that site in a new tab with your selected term already entered, saving you the copy-paste round trip.
 
-Book vendors: Ingram (ipage), Brodart (Bibz), and Libraria. These are the
-purchasing portals you order from, reached through your library's existing
-login.
+Book vendors: Ingram (ipage), Brodart (Bibz), and Libraria. These are the purchasing portals you order from, reached through your library's existing login.
 
-Lookup sources: WorldCat, for checking holdings and editions with no account
-needed, and your own library's catalog. Enter your library's BiblioCommons
-address in the popup once and your catalog joins the right-click menu alongside
-the vendors.
+Lookup sources: WorldCat, for checking holdings and editions with no account needed, and your own library's catalog. Enter your library's BiblioCommons address in the popup once and your catalog joins the right-click menu alongside the vendors.
 
-Everything is set from the toolbar popup. Turn individual sources on or off. Add
-a single "Search all vendors" item that opens every enabled vendor at once, each
-in its own tab, and choose whether the supplementary sources join it. Choose whether new tabs open in the foreground or the
-background. You can also clean up the selected text before searching, which
-removes stray colons, commas, and the word "by" so that a copied "Dune: A
-Novel, by Frank Herbert" behaves in a vendor search box.
+Everything is set from the toolbar popup. Turn individual sources on or off. Add a single "Search all vendors" item that opens every enabled vendor at once, each in its own tab, and choose whether the supplementary sources join it. Choose whether new tabs open in the foreground or the background. You can also clean up the selected text before searching, which removes stray colons, commas, and the word "by" so that a copied "Dune: A Novel, by Frank Herbert" behaves in a vendor search box.
 
-Your data stays on your device. The extension stores only your own preferences
-and the term you are currently searching, in the browser's own storage. Nothing
-is collected, and nothing is sent to any server.
+Your data stays on your device. The extension stores only your own preferences and the term you are currently searching, in the browser's own storage. Nothing is collected, and nothing is sent to any server.
 ```
 
 ---
@@ -270,25 +226,18 @@ Stores sometimes re-ask for these on resubmission — keep answers handy:
 
 ## Firefox (AMO) submission fields
 
-What to put in the two fields on AMO's "Submit a New Version" page.
+What to put in the two fields on AMO's "Submit a New Version" page. As above,
+the fenced blocks are unwrapped on purpose: paste them as-is.
 
 **Release Notes** (public — shown on the listing's detail page, so write for
 *users*, covering what's new since the version they currently have):
 
 ```
 New in this version:
-• You can now search your own library's BiblioCommons catalog. Enter your
-  catalog address in the toolbar popup and it joins the right-click menu.
-• WorldCat is now supported as a lookup source, alongside the book vendors.
-  Turn it on in the toolbar popup, then right-click a selection to check
-  holdings and editions on search.worldcat.org. Unlike the vendor sites it
-  needs no login.
-• Libraria is now supported as a third book vendor. Highlight a title,
-  right-click, and search Ingram, Brodart, or Libraria.
-• Settings now live in the toolbar popup: turn each vendor on or off, choose
-  whether result tabs open in the foreground or background, and clean up
-  selected text (removing stray colons, commas, and the word "by") before
-  searching — on by default, and can be turned off in the popup.
+• You can now search your own library's BiblioCommons catalog. Enter your catalog address in the toolbar popup and it joins the right-click menu.
+• WorldCat is now supported as a lookup source, alongside the book vendors. Turn it on in the toolbar popup, then right-click a selection to check holdings and editions on search.worldcat.org. Unlike the vendor sites it needs no login.
+• Libraria is now supported as a third book vendor. Highlight a title, right-click, and search Ingram, Brodart, or Libraria.
+• Settings now live in the toolbar popup: turn each vendor on or off, choose whether result tabs open in the foreground or background, and clean up selected text (removing stray colons, commas, and the word "by") before searching. It is on by default and can be turned off in the popup.
 
 Note: this version requires Firefox 140 or newer.
 ```
@@ -298,44 +247,22 @@ fact that the vendor sites are login-gated):
 
 ```
 SOURCE CODE & BUILD PROCESS
-This add-on uses no build step, bundler, transpiler, or minifier of our own.
-The files in this package are the complete, human-readable source and run
-exactly as submitted. The only pre-minified file is
-vendor/browser-polyfill.min.js — an unmodified copy of Mozilla's
-webextension-polyfill v0.12.0, obtained from npm
-(npm pack webextension-polyfill@0.12.0) and also available at
-https://github.com/mozilla/webextension-polyfill . Its license is included at
-vendor/browser-polyfill-LICENSE.txt .
+This add-on uses no build step, bundler, transpiler, or minifier of our own. The files in this package are the complete, human-readable source and run exactly as submitted. The only pre-minified file is vendor/browser-polyfill.min.js, an unmodified copy of Mozilla's webextension-polyfill v0.12.0, obtained from npm (npm pack webextension-polyfill@0.12.0) and also available at https://github.com/mozilla/webextension-polyfill . Its license is included at vendor/browser-polyfill-LICENSE.txt .
 
 HOW TO TEST
 1. Select/highlight some text on any web page (e.g., a book title).
-2. Right-click and choose "Search Library Vendors" → "Search Ingram / Brodart /
-   Libraria for '<your text>'" (a single "Search <Vendor>" item appears if only
-   one vendor is enabled in the toolbar popup).
-3. A new tab opens to the vendor's site and your selected text is entered into
-   that site's search box and submitted.
+2. Right-click and choose "Search Library Vendors" → "Search Ingram / Brodart / Libraria for '<your text>'" (a single "Search <Vendor>" item appears if only one vendor is enabled in the toolbar popup).
+3. A new tab opens to the vendor's site and your selected text is entered into that site's search box and submitted.
 
 NO ACCOUNT? TEST WITH WORLDCAT:
-Open the toolbar popup and enable "WorldCat" under Supplementary, then repeat
-the steps above and choose "Search WorldCat for '<your text>'". WorldCat
-(search.worldcat.org) is a public catalogue that needs no login, so this path
-demonstrates the extension's full behaviour end to end without a library
-account. The extension opens the results URL directly and runs no script on
-that site.
+Open the toolbar popup and enable "WorldCat" under Supplementary, then repeat the steps above and choose "Search WorldCat for '<your text>'". WorldCat (search.worldcat.org) is a public catalogue that needs no login, so this path demonstrates the extension's full behaviour end to end without a library account. The extension opens the results URL directly and runs no script on that site.
 
-PLEASE NOTE — gated vendor portals:
-The three vendor sites (ipage.ingramcontent.com, www.bibz2.com,
-www.libraria.com) are professional library purchasing portals that require an
-institutional login to reach a search box. Without an account, the new tab will
-land on the vendor's login page — this is expected. The add-on keeps the pending
-term and fills the search box automatically once you are logged in and a search
-box is present. The context-menu items, tab opening, and the toolbar popup are
-all fully testable without an account.
+PLEASE NOTE: gated vendor portals.
+
+The three vendor sites (ipage.ingramcontent.com, www.bibz2.com, www.libraria.com) are professional library purchasing portals that require an institutional login to reach a search box. Without an account, the new tab will land on the vendor's login page. This is expected. The add-on keeps the pending term and fills the search box automatically once you are logged in and a search box is present. The context-menu items, tab opening, and the toolbar popup are all fully testable without an account.
 
 PRIVACY/DATA:
-The add-on collects and transmits no data. The selected term (storage.local) and
-the user's preferences (storage.sync) stay in the browser. No remote code is
-loaded.
+The add-on collects and transmits no data. The selected term (storage.local) and the user's preferences (storage.sync) stay in the browser. No remote code is loaded.
 ```
 
 ---
